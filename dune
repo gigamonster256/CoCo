@@ -2,6 +2,4 @@
  (target output)
  (alias mel)
  (libraries coco_lib)
- (module_systems es6)
- (preprocess
-  (pps melange.ppx)))
+ (module_systems esm))

@@ -1,7 +1,7 @@
 open Coco_lib
 
 let show_token = function
-  | And -> "And"
+  | Token.And -> "And"
   | Or -> "Or"
   | Not -> "Not"
   | Pow -> "^"
@@ -61,7 +61,7 @@ let show_token = function
 ;;
 
 let tokens_of src =
-  let ts = scan src in
+  let ts = Scanner.scan src in
   List.iter (fun t -> print_endline (show_token t)) ts
 ;;
 

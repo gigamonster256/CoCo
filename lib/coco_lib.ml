@@ -1,7 +1,7 @@
 (* CoCo Parser and Interpreter *)
 
 include Token
-include Lexer
+include Scanner
 
 (* ---- AST types ---- *)
 
@@ -10,6 +10,20 @@ type value =
   | VFloat of float
   | VBool of bool
   | VVoid
+type value =
+  | VInt of int
+  | VFloat of float
+  | VBool of bool
+  | VVoid
+
+let show_value = function
+  | VInt n -> Printf.sprintf "(VInt %d)" n
+  | VFloat f -> Printf.sprintf "(VFloat %f)" f
+  | VBool b -> Printf.sprintf "(VBool %b)" b
+  | VVoid -> "VVoid"
+;;
+
+let pp_value fmt v = Format.fprintf fmt "%s" (show_value v)
 
 type expr =
   | ELit of value
@@ -17,7 +31,6 @@ type expr =
   | ENot of expr
   | EBin of expr * Token.t * expr
   | ECall of string * expr list
-[@@deriving show]
 
 type assign_op =
   | A_ASSIGN
@@ -411,7 +424,7 @@ and builtin name args =
 
 let run source =
   try
-    let tokens = Lexer.scan source in
+    let tokens = Scanner.scan source in
     let stmts = parse tokens in
     let env = ref [] in
     let buf = Buffer.create 256 in

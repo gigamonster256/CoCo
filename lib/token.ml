@@ -117,6 +117,9 @@ let to_string = function
   | Eof -> "EOF"
 ;;
 
+let show t = to_string t
+let pp fmt t = Format.fprintf fmt "%s" (to_string t)
+
 let kw =
   [ "and", And
   ; "or", Or

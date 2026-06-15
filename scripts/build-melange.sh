@@ -14,7 +14,7 @@ dune build @mel
 echo "=== Copying output to $DEST_DIR/lib ==="
 rm -rf "$DEST_DIR"
 mkdir -p "$DEST_DIR/lib"
-cp "$OUT_DIR/melange-lib"/*.js "$DEST_DIR/lib/"
+cp "$OUT_DIR/lib"/*.js "$DEST_DIR/lib/"
 cp -r "$OUT_DIR/node_modules" "$DEST_DIR/"
 
 echo "=== Done ==="

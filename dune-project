@@ -1,2 +1,2 @@
-(lang dune 3.8)
-(using melange 0.1)
+(lang dune 3.21)
+(using melange 1.0)

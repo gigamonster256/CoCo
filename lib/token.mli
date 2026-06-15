@@ -57,5 +57,6 @@ type t =
   | Id of string
   | Eof
 
-val to_string : t -> string
+val show : t -> string
+val pp : Format.formatter -> t -> unit
 val kw : (string * t) list
