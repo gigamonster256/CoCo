@@ -1,429 +1,205 @@
-open Coco_lib
+open Coco
 
-let show_token = function
-  | Token.And -> "And"
-  | Or -> "Or"
-  | Not -> "Not"
-  | Pow -> "^"
-  | Mul -> "*"
-  | Div -> "/"
-  | Mod -> "%"
-  | Add -> "+"
-  | Sub -> "-"
-  | Eq -> "=="
-  | Neq -> "!="
-  | Lt -> "<"
-  | Le -> "<="
-  | Gt -> ">"
-  | Ge -> ">="
-  | Assign -> "="
-  | AddAssign -> "+="
-  | SubAssign -> "-="
-  | MulAssign -> "*="
-  | DivAssign -> "/="
-  | ModAssign -> "%="
-  | PowAssign -> "^="
-  | Inc -> "++"
-  | Dec -> "--"
-  | Void -> "void"
-  | Bool -> "bool"
-  | Int -> "int"
-  | Float -> "float"
-  | True -> "true"
-  | False -> "false"
-  | Lparen -> "("
-  | Rparen -> ")"
-  | Lbrace -> "{"
-  | Rbrace -> "}"
-  | Lbrack -> "["
-  | Rbrack -> "]"
-  | Comma -> ","
-  | Colon -> ":"
-  | Semi -> ";"
-  | Dot -> "."
-  | If -> "if"
-  | Then -> "then"
-  | Else -> "else"
-  | Fi -> "fi"
-  | While -> "while"
-  | Do -> "do"
-  | Od -> "od"
-  | Repeat -> "repeat"
-  | Until -> "until"
-  | Call -> "call"
-  | Return -> "return"
-  | Main -> "main"
-  | Func -> "function"
-  | IntVal n -> Printf.sprintf "INT(%d)" n
-  | FloatVal f -> Printf.sprintf "FLOAT(%f)" f
-  | Id s -> Printf.sprintf "ID(%s)" s
-  | Eof -> "EOF"
+let scanner_test src =
+  let src = In_channel.with_open_text ("scanner/" ^ src) In_channel.input_all in
+  let tokens = Scanner.scan src in
+  List.iter (fun t -> print_endline (Token.show t)) tokens
 ;;
 
-let tokens_of src =
-  let ts = Scanner.scan src in
-  List.iter (fun t -> print_endline (show_token t)) ts
-;;
-
-let%expect_test "scan operators - maximal munch" =
-  tokens_of "*^/%and+-or==!=<<=>>==+=-=*=/=%=^=++--";
+let%expect_test "scan test000.txt" =
+  scanner_test "test000.txt";
   [%expect
     {|
-    *
-    ^
-    /
-    %
-    And
-    +
-    -
-    Or
-    ==
-    !=
-    <
-    <=
-    >
-    >=
-    =
-    +=
-    -=
-    *=
-    /=
-    %=
-    ^=
-    ++
-    --
+    EQUAL_TO
+    EQUAL_TO
+    UNI_DEC
+    UNI_DEC
     EOF
     |}]
 ;;
 
-let%expect_test "scan keywords" =
-  tokens_of
-    "main function if then else fi while do od repeat until call return void bool int float true false";
+let%expect_test "scan test001.txt" =
+  scanner_test "test001.txt";
   [%expect
     {|
-    main
-    function
-    if
-    then
-    else
-    fi
-    while
-    do
-    od
-    repeat
-    until
-    call
-    return
-    void
-    bool
-    int
-    float
-    true
-    false
+    MAIN
+    INT
+    IDENT	input
+    COMMA
+    IDENT	myvar
+    SEMICOLON
+    FUNC
+    IDENT	getSumToNIter
+    OPEN_PAREN
+    INT
+    IDENT	n
+    CLOSE_PAREN
+    COLON
+    INT
+    OPEN_BRACE
+    INT
+    IDENT	i
+    COMMA
+    IDENT	j
+    SEMICOLON
+    IDENT	i
+    ASSIGN
+    INT_VAL	0
+    SEMICOLON
+    IDENT	j
+    ASSIGN
+    INT_VAL	1
+    SEMICOLON
+    WHILE
+    OPEN_PAREN
+    IDENT	j
+    LESS_EQUAL
+    IDENT	n
+    CLOSE_PAREN
+    DO
+    IDENT	i
+    ASSIGN
+    IDENT	i
+    ADD
+    IDENT	j
+    SEMICOLON
+    IDENT	j
+    UNI_INC
+    SEMICOLON
+    OD
+    SEMICOLON
+    RETURN
+    IDENT	i
+    SEMICOLON
+    CLOSE_BRACE
+    SEMICOLON
+    FUNC
+    IDENT	getSumToNRecur
+    OPEN_PAREN
+    INT
+    IDENT	n
+    CLOSE_PAREN
+    COLON
+    INT
+    OPEN_BRACE
+    IF
+    OPEN_PAREN
+    IDENT	n
+    EQUAL_TO
+    INT_VAL	1
+    CLOSE_PAREN
+    THEN
+    RETURN
+    INT_VAL	1
+    SEMICOLON
+    FI
+    SEMICOLON
+    RETURN
+    CALL
+    IDENT	getSumToNRecur
+    OPEN_PAREN
+    IDENT	n
+    SUB
+    INT_VAL	1
+    CLOSE_PAREN
+    ADD
+    IDENT	n
+    SEMICOLON
+    CLOSE_BRACE
+    SEMICOLON
+    OPEN_BRACE
+    IDENT	input
+    ASSIGN
+    CALL
+    IDENT	readInt
+    OPEN_PAREN
+    CLOSE_PAREN
+    SEMICOLON
+    IDENT	myvar
+    ASSIGN
+    CALL
+    IDENT	getSumToNIter
+    OPEN_PAREN
+    IDENT	input
+    CLOSE_PAREN
+    SEMICOLON
+    CALL
+    IDENT	printInt
+    OPEN_PAREN
+    IDENT	input
+    CLOSE_PAREN
+    SEMICOLON
+    CALL
+    IDENT	printInt
+    OPEN_PAREN
+    IDENT	myvar
+    CLOSE_PAREN
+    SEMICOLON
+    CALL
+    IDENT	println
+    OPEN_PAREN
+    CLOSE_PAREN
+    SEMICOLON
+    IDENT	myvar
+    ASSIGN
+    CALL
+    IDENT	getSumToNRecur
+    OPEN_PAREN
+    IDENT	input
+    CLOSE_PAREN
+    SEMICOLON
+    CALL
+    IDENT	printInt
+    OPEN_PAREN
+    IDENT	input
+    CLOSE_PAREN
+    SEMICOLON
+    CALL
+    IDENT	printInt
+    OPEN_PAREN
+    IDENT	myvar
+    CLOSE_PAREN
+    SEMICOLON
+    CALL
+    IDENT	println
+    OPEN_PAREN
+    CLOSE_PAREN
+    SEMICOLON
+    CLOSE_BRACE
+    PERIOD
     EOF
     |}]
 ;;
 
-let%expect_test "scan identifiers with keyword substrings" =
-  tokens_of "iffy elsest whileist int_47 main1 palvoidous gaulint returnist";
+let%expect_test "scan test003.txt" =
+  scanner_test "test003.txt";
   [%expect
     {|
-    ID(iffy)
-    ID(elsest)
-    ID(whileist)
-    ID(int_47)
-    ID(main1)
-    ID(palvoidous)
-    ID(gaulint)
-    ID(returnist)
-    EOF
-    |}]
-;;
-
-let%expect_test "scan integer literals" =
-  tokens_of "0 42 -17 1337";
-  [%expect
-    {|
-    INT(0)
-    INT(42)
-    INT(-17)
-    INT(1337)
-    EOF
-    |}]
-;;
-
-let%expect_test "scan float literals" =
-  tokens_of "3.14 -0.605 2.50 24.323";
-  [%expect
-    {|
-    FLOAT(3.140000)
-    FLOAT(-0.605000)
-    FLOAT(2.500000)
-    FLOAT(24.323000)
-    EOF
-    |}]
-;;
-
-let%expect_test "scan delimiters and punctuation" =
-  tokens_of "(){}[],:;.";
-  [%expect
-    {|
-    (
-    )
-    {
-    }
-    [
-    ]
-    ,
-    :
-    ;
-    .
-    EOF
-    |}]
-;;
-
-let%expect_test "scan line comments" =
-  tokens_of "main // this is a comment\nint // another\nx;";
-  [%expect
-    {|
-    main
-    int
-    ID(x)
-    ;
-    EOF
-    |}]
-;;
-
-let%expect_test "scan block comments" =
-  tokens_of "main /* block\ncomment */ int x;";
-  [%expect
-    {|
-    main
-    int
-    ID(x)
-    ;
-    EOF
-    |}]
-;;
-
-let%expect_test "scan full program header" =
-  tokens_of "main int x, y; float z; { }.";
-  [%expect
-    {|
-    main
-    int
-    ID(x)
-    ,
-    ID(y)
-    ;
-    float
-    ID(z)
-    ;
-    {
-    }
-    .
-    EOF
-    |}]
-;;
-
-let%expect_test "scan assignment operators" =
-  tokens_of "x = 1; x += 2; x -= 3; x *= 4; x /= 5; x %= 6; x ^= 7;";
-  [%expect
-    {|
-    ID(x)
-    =
-    INT(1)
-    ;
-    ID(x)
-    +=
-    INT(2)
-    ;
-    ID(x)
-    -=
-    INT(3)
-    ;
-    ID(x)
-    *=
-    INT(4)
-    ;
-    ID(x)
-    /=
-    INT(5)
-    ;
-    ID(x)
-    %=
-    INT(6)
-    ;
-    ID(x)
-    ^=
-    INT(7)
-    ;
-    EOF
-    |}]
-;;
-
-let%expect_test "scan if while repeat return call" =
-  tokens_of
-    "if (x) then y; fi; while (a) do b; od; repeat c; until (d); return; call f();";
-  [%expect
-    {|
-    if
-    (
-    ID(x)
-    )
-    then
-    ID(y)
-    ;
-    fi
-    ;
-    while
-    (
-    ID(a)
-    )
-    do
-    ID(b)
-    ;
-    od
-    ;
-    repeat
-    ID(c)
-    ;
-    until
-    (
-    ID(d)
-    )
-    ;
-    return
-    ;
-    call
-    ID(f)
-    (
-    )
-    ;
-    EOF
-    |}]
-;;
-
-let%expect_test "scan boolean expressions" =
-  tokens_of "true and false or not true";
-  [%expect
-    {|
-    true
-    And
-    false
-    Or
-    Not
-    true
-    EOF
-    |}]
-;;
-
-let%expect_test "scan ++ and -- unary" =
-  tokens_of "x++; y--;";
-  [%expect
-    {|
-    ID(x)
-    ++
-    ;
-    ID(y)
-    --
-    ;
-    EOF
-    |}]
-;;
-
-let%expect_test "scan negative number edge case" =
-  tokens_of "-5 - 3";
-  [%expect
-    {|
-    INT(-5)
-    -
-    INT(3)
-    EOF
-    |}]
-;;
-
-let%expect_test "scan function declaration with params" =
-  tokens_of "function add(int a, int b) : int { return a + b; };";
-  [%expect
-    {|
-    function
-    ID(add)
-    (
-    int
-    ID(a)
-    ,
-    int
-    ID(b)
-    )
-    :
-    int
-    {
-    return
-    ID(a)
-    +
-    ID(b)
-    ;
-    }
-    ;
-    EOF
-    |}]
-;;
-
-let%expect_test "scan array types and indexing" =
-  tokens_of "int[5] arr; arr[0] = 1; int[2][3] matrix;";
-  [%expect
-    {|
-    int
-    [
-    INT(5)
-    ]
-    ID(arr)
-    ;
-    ID(arr)
-    [
-    INT(0)
-    ]
-    =
-    INT(1)
-    ;
-    int
-    [
-    INT(2)
-    ]
-    [
-    INT(3)
-    ]
-    ID(matrix)
-    ;
-    EOF
-    |}]
-;;
-
-let%expect_test "scan relational operators with mixed types" =
-  tokens_of "1 == 2; 3.14 != 0.0; true == false; a < b; x >= 10;";
-  [%expect
-    {|
-    INT(1)
-    ==
-    INT(2)
-    ;
-    FLOAT(3.140000)
-    !=
-    FLOAT(0.000000)
-    ;
-    true
-    ==
-    false
-    ;
-    ID(a)
-    <
-    ID(b)
-    ;
-    ID(x)
-    >=
-    INT(10)
-    ;
+    MAIN
+    FLOAT
+    IDENT	positiveFloat
+    ASSIGN
+    FLOAT_VAL	24.323
+    SEMICOLON
+    INT
+    IDENT	positiveInteger
+    ASSIGN
+    INT_VAL	13
+    SEMICOLON
+    FLOAT
+    IDENT	negativeFloat
+    ASSIGN
+    FLOAT_VAL	-25.65
+    SEMICOLON
+    INT
+    IDENT	negativeInteger
+    ASSIGN
+    INT_VAL	-14
+    SEMICOLON
+    FLOAT
+    IDENT	incorrectNumber
+    ASSIGN
+    ERROR
     EOF
     |}]
 ;;

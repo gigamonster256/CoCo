@@ -96,7 +96,7 @@ let rec next st =
         | ',' -> Token.Comma, st
         | ':' -> Token.Colon, st
         | ';' -> Token.Semi, st
-        | '.' -> Token.Dot, st
+        | '.' -> Token.Period, st
         | '+' ->
           begin match peek st with
           | Some '=' -> Token.AddAssign, snd (adv st)
@@ -152,7 +152,7 @@ let rec next st =
 let scan src =
   let rec loop st acc =
     match next st with
-    | None, _ -> List.rev acc
+    | None, _ -> List.rev @@ (Token.Eof :: acc)
     | Some tok, st -> loop st (tok :: acc)
   in
   loop (init src) []

@@ -1,5 +1,6 @@
 (library
- (name coco_lib)
+ (name coco)
  (modes native melange)
- (modules token scanner)
+ (modules token scanner parser)
+ ; (private_modules parser)
  (libraries melange))

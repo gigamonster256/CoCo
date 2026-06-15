@@ -1,7 +1,7 @@
 (library
- (name scanner_tests)
- (modules scanner_tests)
- (libraries coco_lib)
+ (name coco_tests)
+ (modules scanner_tests parser_tests)
+ (libraries coco)
  (inline_tests
   (deps
    (glob_files scanner/*.txt)))

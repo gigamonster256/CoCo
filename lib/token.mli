@@ -38,7 +38,7 @@ type t =
   | Comma
   | Colon
   | Semi
-  | Dot
+  | Period
   | If
   | Then
   | Else
@@ -56,6 +56,7 @@ type t =
   | FloatVal of float
   | Id of string
   | Eof
+  | Error
 
 val show : t -> string
 val pp : Format.formatter -> t -> unit
