@@ -13,8 +13,10 @@ pkgs.mkShell {
     opkgs.ocaml
     opkgs.findlib
     opkgs.ocamlformat
+    opkgs.ocaml-lsp
     opkgs.melange
     opkgs.ppxlib
     opkgs.ppx_expect
+    opkgs.ppx_deriving
   ];
 }

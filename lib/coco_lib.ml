@@ -17,6 +17,7 @@ type expr =
   | ENot of expr
   | EBin of expr * Token.t * expr
   | ECall of string * expr list
+[@@deriving show]
 
 type assign_op =
   | A_ASSIGN

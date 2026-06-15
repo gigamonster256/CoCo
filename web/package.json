@@ -12,15 +12,17 @@
     "url": "git+https://github.com/gigamonster256/CoCo.git"
   },
   "scripts": {
-    "dev": "next",
+    "dev": "next --turbopack",
     "build": "next build",
+    "build:melange": "../scripts/build-melange.sh",
+    "prebuild": "npm run build:melange",
     "postbuild": "pagefind --site .next/server/app --output-path public/_pagefind",
     "start": "next start"
   },
   "dependencies": {
     "next": "^16.2.9",
-    "nextra": "^4.6.1",
-    "nextra-theme-docs": "^4.6.1",
+    "nextra": "^5.0.0-alpha.24",
+    "nextra-theme-docs": "^5.0.0-alpha.24",
     "react": "^19.2.7",
     "react-dom": "^19.2.7"
   },

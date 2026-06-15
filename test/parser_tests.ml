@@ -1,4 +1,4 @@
-open Coco_lib
+open CoCo
 
 let test prog = run prog
 
