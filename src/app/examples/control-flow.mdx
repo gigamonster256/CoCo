@@ -1,0 +1,109 @@
+---
+title: Control Flow
+---
+
+# Control Flow Examples
+
+## If / Then / Else / Fi
+
+```coco
+main
+int a, b, c;
+{
+    a = call readInt();
+    b = call readInt();
+
+    if (a == b) then
+        call printInt(a * b);
+    else
+        c = call readInt();
+        if (a < b) then
+            call printInt(b - a);
+        else
+            call printInt(a / b);
+        fi;
+        call printInt(c);
+    fi;
+    call println();
+}.
+```
+
+→ [test: PA2/test001.txt](https://github.com/gigamonster256/coco-compiler/blob/main/engr-cse-compiler-design-f23/PA2/test001.txt)
+
+## While Loop (Finding Max)
+
+```coco
+main
+int n, i, curr, max;
+{
+    n = call readInt();
+    i = 0;
+    max = 0;
+    while (i < n) do
+        curr = call readInt();
+        if (curr > max) then
+            max = curr;
+        fi;
+        i++;
+    od;
+    call printInt(max);
+    call println();
+}.
+```
+
+→ [test: PA2/test003.txt](https://github.com/gigamonster256/coco-compiler/blob/main/engr-cse-compiler-design-f23/PA2/test003.txt)
+
+## Repeat-Until Loop
+
+```coco
+main
+int a, b;
+{
+    b = 10;
+    repeat
+        a++;
+    until (a > b);
+    call printInt(a);
+    call println();
+}.
+```
+
+**Output:** `11`
+
+→ [test: PA4/test014.txt](https://github.com/gigamonster256/coco-compiler/blob/main/engr-cse-compiler-design-f23/PA4/test014.txt)
+
+## Nested While + Repeat
+
+```coco
+main
+int outsideNum, insideNum;
+{
+    outsideNum = 5;
+    insideNum = outsideNum++;
+    while (insideNum > 0) do
+        call printInt(insideNum * outsideNum);
+        insideNum--;
+        repeat
+            outsideNum += 2;
+        until (outsideNum > 10);
+    od;
+    call println();
+}.
+```
+
+## If with False Condition
+
+```coco
+main {
+    if (false) then
+        call printInt(1);
+    else
+        call printInt(0);
+    fi;
+    call println();
+}.
+```
+
+**Output:** `0`
+
+→ [test: PA2/test015.txt](https://github.com/gigamonster256/coco-compiler/blob/main/engr-cse-compiler-design-f23/PA2/test015.txt)

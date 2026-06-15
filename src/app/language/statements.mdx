@@ -1,0 +1,156 @@
+---
+title: Statements
+---
+
+# Statements
+
+CoCo has six statement forms. Every statement in a sequence must end with a
+semicolon (`;`).
+
+## Assignment
+
+```
+designator assignOp relExpr
+designator unaryOp
+```
+
+```coco
+x = 42;                 // simple assignment
+y += 10;                // compound assignment
+z++;                    // increment
+arr[0] = 5;             // array element assignment
+matrix[i][j] = value;   // multi-dim array assignment
+```
+
+## Function Call (as Statement)
+
+```
+"call" ident "(" [ relExpr { "," relExpr } ] ")"
+```
+
+Function calls used as **statements** must call void-returning functions:
+
+```coco
+call println();              // void, no args
+call printInt(x);            // void, one arg
+call myFunc(a, b + c);       // void user function
+```
+
+Using a non-void function as a statement is a type error:
+
+```coco
+call readInt();     // ERROR: readInt returns int, not void
+```
+
+## If Statement
+
+```
+"if" relation "then" statSeq [ "else" statSeq ] "fi"
+```
+
+```coco
+if (x > 0) then
+    call printInt(1);
+else
+    call printInt(-1);
+fi;
+```
+
+The condition must be a parenthesized expression (a `relation` in the grammar),
+and must evaluate to `bool`.
+
+### Else-If Pattern
+
+CoCo has no `elif` keyword. Chain if/else manually:
+
+```coco
+if (x > 0) then
+    call printInt(1);
+else
+    if (x < 0) then
+        call printInt(-1);
+    else
+        call printInt(0);
+    fi;
+fi;
+```
+
+## While Loop
+
+```
+"while" relation "do" statSeq "od"
+```
+
+```coco
+i = 0;
+while (i < 10) do
+    call printInt(i);
+    i++;
+od;
+```
+
+The condition is checked before each iteration. If initially `false`, the body
+never executes.
+
+## Repeat-Until Loop
+
+```
+"repeat" statSeq "until" relation
+```
+
+```coco
+i = 0;
+repeat
+    call printInt(i);
+    i++;
+until (i >= 10);
+```
+
+The body always executes at least once. The condition is checked after each
+iteration — the loop repeats **until** the condition becomes `true`.
+
+## Return Statement
+
+```
+"return" [ relExpr ]
+```
+
+```coco
+return;              // return from void function
+return x + 1;        // return with value
+return call foo(a);  // return function result
+```
+
+- `return;` with no expression is valid only in `void` functions
+- `return expr;` in a non-void function: the expression type must match the declared return type
+- `return` immediately exits the current function
+
+## Statement Sequences
+
+Multiple statements are separated by semicolons. The final statement in a
+sequence also requires a semicolon:
+
+```coco
+{
+    x = 1;
+    y = 2;      // <-- trailing semicolon required
+}
+```
+
+## Grammar Summary
+
+```ebnf
+statement  = assign | funcCall | ifStat | whileStat | repeatStat | returnStat .
+statSeq    = statement ";" { statement ";" } .
+```
+
+### FIRST Sets for Statement Nonterminals
+
+| Statement Form | FIRST Token |
+|---------------|-------------|
+| Assignment | `IDENT` (variable name) |
+| Function call | `call` |
+| If | `if` |
+| While | `while` |
+| Repeat | `repeat` |
+| Return | `return` |

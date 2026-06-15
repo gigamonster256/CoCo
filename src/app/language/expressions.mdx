@@ -1,0 +1,182 @@
+---
+title: Expressions
+---
+
+# Expressions
+
+## Precedence
+
+CoCo expressions use standard operator precedence (lowest to highest):
+
+| Level | Operators | Assoc |
+|-------|-----------|-------|
+| Relational | `==` `!=` `<` `<=` `>` `>=` | Left |
+| Additive | `+` `-` `or` | Left |
+| Multiplicative | `*` `/` `%` `and` | Left |
+| Power | `^` | Right |
+| Unary | `not` | — |
+| Primary | literals, designators, `( )`, `call` | — |
+
+## Primary Expressions
+
+### Literals
+
+```coco
+42           // int
+-17          // int (negative)
+3.14         // float
+-0.605       // float (negative)
+true         // bool
+false        // bool
+```
+
+### Designators (Variable Access)
+
+```coco
+x            // simple variable
+arr[0]       // array element
+matrix[1][2] // multi-dimensional array element
+```
+
+### Parenthesized Expressions
+
+```coco
+(1 + 2) * 3  // parens override precedence
+```
+
+### Function Calls
+
+```coco
+call readInt()              // no args
+call max(a, b)              // two args
+call printInt(x + y)        // expression as argument
+```
+
+## Arithmetic Expressions
+
+```coco
+a = 1 + 2;          // 3
+b = 5 - 3;          // 2
+c = 4 * 7;          // 28
+d = 10 / 3;         // 3 (integer division)
+e = 10 % 3;         // 1 (modulo)
+f = 2 ^ 8;          // 256 (exponentiation)
+```
+
+Float arithmetic works the same way:
+
+```coco
+x = 3.14 + 2.86;    // 6.00
+y = 10.0 / 3.0;     // 3.33
+z = 2.0 ^ 10.0;     // 1024.0
+```
+
+## Boolean Expressions
+
+```coco
+a = true and false;     // false
+b = true or false;      // true
+c = not true;           // false
+d = true ^ false;       // true (xor, using ^)
+```
+
+`and` binds tighter than `or`:
+
+```coco
+// false or false and true or false
+// = false or (false and true) or false
+// = false or false or false
+// = false
+d = false or false and true or false;
+```
+
+## Relational Expressions
+
+```coco
+a = (1 == 2);           // false
+b = (3 != 4);           // true
+c = (5 < 6);            // true
+d = (7 <= 7);           // true
+e = (8 > 9);            // false
+f = (10 >= 10);         // true
+```
+
+Booleans can be compared for equality:
+
+```coco
+x = (true == false);    // false
+y = (true != false);    // true
+```
+
+Ordering comparisons (`<`, `<=`, `>`, `>=`) are **not** valid for `bool`.
+
+## Mixed Expressions
+
+Due to precedence:
+
+```coco
+// 1 + 2 * 3 ^ 4
+// = 1 + 2 * (3 ^ 4)    -- power first
+// = 1 + (2 * 81)       -- multiply
+// = 1 + 162            -- add
+// = 163
+x = 1 + 2 * 3 ^ 4;
+
+// parens override: (1 + 2) * 3 = 9
+y = (1 + 2) * 3;
+```
+
+## Compound Assignment
+
+Compound assignment operators combine an operation with assignment:
+
+```coco
+x = 10;
+x += 5;     // x = 15  (x = x + 5)
+x -= 3;     // x = 12  (x = x - 3)
+x *= 2;     // x = 24  (x = x * 2)
+x /= 4;     // x = 6   (x = x / 4)
+x %= 4;     // x = 2   (x = x % 4)
+x ^= 3;     // x = 8   (x = x ^ 3)
+```
+
+Float variables support the same compound operators.
+
+Boolean variables support only `^=` (xor-assign):
+
+```coco
+b = true;
+b ^= false;  // b = true
+b ^= true;   // b = false
+```
+
+## Increment / Decrement
+
+```coco
+x = 5;
+x++;        // x = 6
+x--;        // x = 5
+```
+
+`++` and `--` work on `int` and `float` only. They are postfix-only
+(unary operators in the grammar). They cannot appear inside larger expressions.
+
+## Unary `not`
+
+```coco
+b = not true;           // false
+c = not (x > 0);        // negate comparison
+d = not not true;       // true (double negation)
+```
+
+## Chained Comparisons
+
+Relational operators are **left-associative** but are **not** designed for
+chained comparisons. The grammar permits a single optional `relOp` per
+`relExpr`, so:
+
+```coco
+// This is valid but may not mean what you expect:
+// 1 == 2 evaluates to false (bool)
+// false != 3 is a type error (bool != int) unless both are ints
+```

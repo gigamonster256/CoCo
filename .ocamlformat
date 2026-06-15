@@ -1,0 +1,10 @@
+profile = janestreet
+
+margin = 80
+doc-comments-padding = 80
+exp-grouping = preserve
+break-string-literals = never
+
+module-item-spacing = preserve
+exp-grouping = preserve
+sequence-blank-line = preserve-one

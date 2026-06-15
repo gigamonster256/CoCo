@@ -1,0 +1,111 @@
+---
+title: Formal Grammar
+---
+
+# Formal Grammar
+
+The grammar is LL(1) and parsed by recursive descent. FIRST sets are defined
+in `NonTerminal.java`.
+
+## Complete EBNF
+
+```ebnf
+(* Program Structure *)
+computation  = "main" { varDecl } { funcDecl } "{" statSeq "}" "." .
+
+(* Declarations *)
+typeDecl     = type { "[" integerLit "]" } .
+type         = "bool" | "int" | "float" .
+
+varDecl      = typeDecl ident { "," ident } ";" .
+
+paramType    = type { "[" "]" } .
+paramDecl    = paramType ident .
+formalParam  = "(" [ paramDecl { "," paramDecl } ] ")" .
+
+funcBody     = "{" { varDecl } statSeq "}" ";" .
+funcDecl     = "function" ident formalParam ":" ( "void" | type ) funcBody .
+
+(* Statements *)
+statement    = assign | funcCall | ifStat | whileStat | repeatStat | returnStat .
+
+statSeq      = statement ";" { statement ";" } .
+
+assign       = designator ( assignOp relExpr | unaryOp ) .
+
+funcCall     = "call" ident "(" [ relExpr { "," relExpr } ] ")" .
+
+ifStat       = "if" relation "then" statSeq [ "else" statSeq ] "fi" .
+
+whileStat    = "while" relation "do" statSeq "od" .
+
+repeatStat   = "repeat" statSeq "until" relation .
+
+returnStat   = "return" [ relExpr ] .
+
+(* Expressions — precedence from low to high *)
+relExpr      = addExpr { relOp addExpr } .
+
+addExpr      = multExpr { addOp multExpr } .
+
+multExpr     = powExpr { multOp powExpr } .
+
+powExpr      = groupExpr { powOp groupExpr } .
+
+groupExpr    = literal | designator | "not" relExpr | relation | funcCall .
+
+relation     = "(" relExpr ")" .
+
+(* Designator *)
+designator   = ident { "[" relExpr "]" } .
+
+(* Operators *)
+relOp        = "==" | "!=" | "<" | "<=" | ">" | ">=" .
+addOp        = "+" | "-" | "or" .
+multOp       = "*" | "/" | "%" | "and" .
+powOp        = "^" .
+assignOp     = "=" | "+=" | "-=" | "*=" | "/=" | "%=" | "^=" .
+unaryOp      = "++" | "--" .
+
+(* Literals *)
+boolLit      = "true" | "false" .
+integerLit   = ["-"] digit { digit } .
+floatLit     = integerLit "." digit { digit } .
+literal      = boolLit | integerLit | floatLit .
+```
+
+## Operator Precedence Table
+
+| Precedence | Level              | Operators                    | Assoc  |
+|-----------|--------------------|------------------------------|--------|
+| 1 (highest) | Primary         | literals, designators, `call`, `( )` | —    |
+| 2         | Unary              | `not` (prefix)               | —      |
+| 3         | Power              | `^`                          | Right  |
+| 4         | Multiplicative     | `*` `/` `%` `and`            | Left   |
+| 5         | Additive           | `+` `-` `or`                 | Left   |
+| 6 (lowest)| Relational         | `==` `!=` `<` `<=` `>` `>=` | Left   |
+
+**Note:** `and` binds tighter than `or`, matching standard boolean algebra
+conventions.
+
+## FIRST Sets
+
+| Nonterminal | FIRST Tokens |
+|-------------|-------------|
+| `COMPUTATION` | `main` |
+| `VAR_DECL` | `int`, `float`, `bool` |
+| `FUNC_DECL` | `function` |
+| `FUNC_BODY` | `{` |
+| `FORMAL_PARAM` | `(` |
+| `STATEMENT` | `IDENT`, `call`, `if`, `while`, `repeat`, `return` |
+| `IF_STAT` | `if` |
+| `WHILE_STAT` | `while` |
+| `REPEAT_STAT` | `repeat` |
+| `RETURN_STAT` | `return` |
+| `ASSIGN` | `IDENT` |
+| `FUNC_CALL` | `call` |
+| `REL_EXPR` | `INT_VAL`, `FLOAT_VAL`, `TRUE`, `FALSE`, `IDENT`, `not`, `(`, `call` |
+| `LITERAL` | `INT_VAL`, `FLOAT_VAL`, `TRUE`, `FALSE` |
+| `DESIGNATOR` | `IDENT` |
+| `TYPE` | `int`, `float`, `bool` |
+| `RELATION` | `(` |

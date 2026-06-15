@@ -1,0 +1,46 @@
+---
+title: The CoCo Language
+---
+
+# The CoCo Language
+
+CoCo is a statically typed, imperative programming language designed for
+educational compiler construction. It has C-like syntax with Python-inspired
+keywords and provides first-class multi-dimensional arrays, user-defined
+functions with overloading, and a small set of built-in I/O primitives.
+
+## Quick Example
+
+```coco
+// Fibonacci in CoCo
+function fibonacci(int n) : int {
+  if (n <= 1) then return n; fi;
+  return call fibonacci(n - 1) + call fibonacci(n - 2);
+};
+
+main {
+  call printInt(call fibonacci(10));
+  call println();
+}.
+```
+
+## Language Highlights
+
+| Feature | Description |
+|---------|-------------|
+| **Static types** | `int`, `float`, `bool`, `void` |
+| **Multi-dim arrays** | `int[3][5] matrix;` |
+| **Function overloading** | Multiple functions with same name, different param types |
+| **Recursion** | Full support for recursive functions |
+| **Control flow** | `if/then/else/fi`, `while/do/od`, `repeat/until` |
+| **Built-in I/O** | `printInt`, `printFloat`, `printBool`, `println`, `readInt`, `readFloat`, `readBool` |
+| **Rich operators** | Arithmetic, relational, boolean, exponentiation, compound assignment |
+
+## About This Documentation
+
+This language reference was recovered from a complete compiler implementation
+and validated against ~150+ test programs. Every rule and example is backed by
+actual compiler test cases.
+
+**Next steps:** Read the [Language Reference](/language/overview) or browse
+[Examples](/examples).

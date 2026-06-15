@@ -1,0 +1,119 @@
+---
+title: Compiler Pipeline
+---
+
+# Compiler Pipeline
+
+The CoCo reference compiler is a multi-pass compiler written in Java.
+It targets the DLX virtual machine (a RISC-style educational ISA).
+
+## Pipeline Overview
+
+```
+Source (.txt)
+  │
+  ▼
+┌─────────────────┐
+│  Scanner        │  Lexical analysis — maximal munch tokenization
+│  (Scanner.java) │  Hand-written, not generated
+└────────┬────────┘
+         │ Token stream
+         ▼
+┌─────────────────┐
+│  Parser         │  Recursive descent, LL(1) with FIRST sets
+│  (Compiler.java)│  Builds Abstract Syntax Tree
+└────────┬────────┘
+         │ AST
+         ▼
+┌─────────────────┐
+│  Symbol Table   │  Scoped variable/function resolution
+│  (SymbolTable)  │  Function overloading support
+└────────┬────────┘
+         │ Decorated AST
+         ▼
+┌─────────────────┐
+│  Type Checker   │  Visitor over AST, strict type verification
+│  (TypeChecker)  │  Array bounds checking (compile-time)
+└────────┬────────┘
+         │ Type-checked AST
+         ▼
+┌─────────────────┐
+│  IR Generator   │  AST → Three-Address Code in SSA-like form
+│  (IRGenerator)  │  Organized into Control Flow Graph (CFG)
+└────────┬────────┘
+         │ CFG (TAC instructions)
+         ▼
+┌─────────────────┐
+│  Optimizer      │  CP, CF, CSE, DCE (stubs in reference impl)
+│  (Compiler.java)│  Infrastructure in place for all passes
+└────────┬────────┘
+         │ Optimized CFG
+         ▼
+┌─────────────────┐
+│  Register Alloc │  Graph-coloring based (stub)
+│  (Compiler.java)│  Configurable: 2–24 general registers
+└────────┬────────┘
+         │
+         ▼
+┌─────────────────┐
+│  Code Generator │  TAC → DLX machine code (int[] array)
+│  (Compiler.java)│  F1/F2/F3 instruction formats
+└────────┬────────┘
+         │ DLX bytecode
+         ▼
+┌─────────────────┐
+│  DLX Emulator   │  Register/memory VM, executes program
+│  (DLX.java)     │  32 regs, 10,000 word memory
+└─────────────────┘
+```
+
+## Key Source Files
+
+| File | Lines | Purpose |
+|------|-------|---------|
+| `Token.java` | 177 | Token definitions, lexeme matching |
+| `Scanner.java` | 215 | Hand-written maximal-munch scanner |
+| `NonTerminal.java` | 255 | Grammar nonterminals and FIRST sets |
+| `Compiler.java` | 1391+ | Parser, code gen, optimizer |
+| `Interpreter.java` | 1081 | Tree-walk interpreter (executable spec) |
+| `DLX.java` | 959 | DLX processor emulator + assembler |
+| `SymbolTable.java` | — | Scoped symbol management |
+| `TypeChecker.java` | 299 | Visitor-based type checking |
+
+## AST Node Types (36 nodes)
+
+The AST is built using the Visitor pattern. Every AST node implements `Visitable`
+and accepts a `NodeVisitor`.
+
+| Category | Nodes |
+|----------|-------|
+| Root | `AST`, `Computation` |
+| Declarations | `DeclarationList`, `VariableDeclaration`, `FunctionDeclaration`, `FunctionBody` |
+| Statements | `StatementSequence`, `Assignment`, `FunctionCall`, `IfStatement`, `WhileStatement`, `RepeatStatement`, `ReturnStatement` |
+| Expressions | `Addition`, `Subtraction`, `Multiplication`, `Division`, `Modulo`, `Power`, `Relation`, `LogicalAnd`, `LogicalOr`, `LogicalNot` |
+| Literals | `IntegerLiteral`, `FloatLiteral`, `BoolLiteral` |
+| Designators | `Variable`, `ArrayIndex` |
+| Misc | `ParameterList`, `ArgumentList`, `Parameter` |
+
+## Three-Address Code Instructions
+
+| Kind | Description |
+|------|-------------|
+| `ADD`, `SUB`, `MUL`, `DIV`, `MOD`, `POW` | Arithmetic |
+| `CMP` | Comparison (sets flags) |
+| `OR`, `AND`, `NOT` | Boolean logic |
+| `MOV` | Assignment / copy |
+| `BEQ`, `BNE`, `BLT`, `BGE`, `BLE`, `BGT` | Conditional branches |
+| `BSR`, `JSR`, `RET` | Subroutine calls / return |
+| `RDI`, `RDF`, `RDB` | Read int/float/bool |
+| `WRI`, `WRF`, `WRB`, `WRL` | Write int/float/bool/line |
+
+## Optimization Passes (Infrastructure)
+
+The reference implementation has stubs for:
+
+- **CP** — Copy Propagation
+- **CF** — Constant Folding
+- **CSE** — Common Subexpression Elimination
+- **DCE** — Dead Code Elimination
+- **MAX** — Run all until convergence

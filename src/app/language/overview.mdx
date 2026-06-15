@@ -1,0 +1,74 @@
+---
+title: Language Overview
+---
+
+# Language Overview
+
+## Program Structure
+
+A CoCo program consists of three sections, in order:
+
+1. **Global variable declarations** (optional)
+2. **Function declarations** (optional)  
+3. **Main block** (required)
+
+```coco
+main
+  // global variable declarations
+  int x;
+  float pi;
+
+  // function declarations
+  function square(int n) : int {
+    return n * n;
+  };
+
+  // main body
+{
+  x = 42;
+  pi = 3.14;
+  call printInt(x);
+  call println();
+}.
+```
+
+The program is terminated with a period (`.`).
+
+## Declarations vs. Body
+
+Variable and function declarations appear **before** the main body's opening
+brace `{`. The body `{ ... }` contains only executable statements.
+
+```coco
+main
+  int globalVar;            // declaration — before opening brace
+  function helper() : void { // declaration — before opening brace
+    return;
+  };
+{                           // body begins
+  globalVar = 5;            // statement — inside braces
+  call helper();            // statement — inside braces
+}.                          // program ends
+```
+
+## Key Design Principles
+
+- **No implicit type coercion** — `int + float` is a type error
+- **`call` required for all function invocations** — both built-in and user-defined
+- **Semicolons separate statements** — every statement in a sequence ends with `;`
+- **Conditions must be `bool`** — no truthiness for other types
+
+## Type Summary
+
+| Type   | Literals            | Example             |
+|--------|---------------------|---------------------|
+| `int`  | Decimal digits      | `42`, `-17`         |
+| `float`| Decimal with `.`    | `3.14`, `-0.605`    |
+| `bool` | `true`, `false`     | `true`              |
+| `void` | (none)              | Return type only    |
+
+## Next Steps
+
+- [Lexical Structure](/language/lexical) — tokens, identifiers, comments
+- [Formal Grammar](/language/grammar) — complete EBNF
+- [Type System](/language/types) — type rules and signatures

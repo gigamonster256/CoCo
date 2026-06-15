@@ -1,0 +1,7 @@
+(library
+ (name coco_lib)
+ (modes native melange)
+ (modules token lexer coco_lib)
+ (libraries melange)
+ (preprocess
+  (pps melange.ppx)))

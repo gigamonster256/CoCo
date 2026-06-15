@@ -1,0 +1,127 @@
+---
+title: Basic Programs
+---
+
+# Basic Program Examples
+
+## Hello, World
+
+The simplest CoCo program — print a value and a newline.
+
+```coco
+main {
+    call printInt(1);
+    call println();
+}.
+```
+
+**Output:** `1`
+
+→ [test: PA4/test000.txt](https://github.com/gigamonster256/coco-compiler/blob/main/engr-cse-compiler-design-f23/PA4/test000.txt)
+
+## Variables and I/O
+
+Reading and printing values of all three primitive types.
+
+```coco
+main
+int x;
+float fX;
+bool bX;
+{
+    x = call readInt();
+    call printInt(x);
+    call println();
+
+    fX = call readFloat();
+    call printFloat(fX);
+    call println();
+
+    bX = call readBool();
+    call printBool(bX);
+    call println();
+}.
+```
+
+→ [test: PA2/test000.txt](https://github.com/gigamonster256/coco-compiler/blob/main/engr-cse-compiler-design-f23/PA2/test000.txt)
+
+## Arithmetic Operations
+
+```coco
+main {
+    a = 1 + 2 * 3 ^ 4;
+    call printInt(a);
+    call println();
+
+    b = (1 + 2) * 3;
+    call printInt(b);
+    call println();
+}.
+```
+
+**Output:** `163` then `9`
+
+→ [test: PA4/test006.txt](https://github.com/gigamonster256/coco-compiler/blob/main/engr-cse-compiler-design-f23/PA4/test006.txt)
+
+## All Assignment Operators
+
+```coco
+main {
+    a = 1;
+    b = 2;
+    a += b;
+    call printInt(a);   // 3
+    a *= b;
+    call printInt(a);   // 6
+    a -= b;
+    call printInt(a);   // 4
+    a /= b;
+    call printInt(a);   // 2
+    a %= 2;
+    call printInt(a);   // 0
+    a ^= 2;
+    call printInt(a);   // 2
+    call println();
+}.
+```
+
+**Output:** `3 6 4 2 0 2`
+
+→ [test: PA2/test011.txt](https://github.com/gigamonster256/coco-compiler/blob/main/engr-cse-compiler-design-f23/PA2/test011.txt)
+
+## Boolean Logic (3-SAT)
+
+```coco
+main
+bool A, B, C;
+bool expr1, expr2, expr3, result;
+{
+    A = call readBool();
+    B = call readBool();
+    C = call readBool();
+
+    expr1 = (A or B or not C);
+    expr2 = (not A or not B or C);
+    expr3 = (A or not B or not C);
+    result = expr1 and expr2 and expr3;
+
+    call printBool(result);
+    call println();
+}.
+```
+
+→ [test: PA2/test009.txt](https://github.com/gigamonster256/coco-compiler/blob/main/engr-cse-compiler-design-f23/PA2/test009.txt)
+
+## Nested Boolean Expression
+
+```coco
+main {
+    a = true and (false or (true and not false) or false);
+    call printBool(a);      // true
+    call println();
+}.
+```
+
+**Output:** `true`
+
+→ [test: PA89/test119.txt](https://github.com/gigamonster256/coco-compiler/blob/main/engr-cse-compiler-design-f23/PA89/test119.txt)

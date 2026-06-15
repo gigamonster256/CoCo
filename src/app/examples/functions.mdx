@@ -1,0 +1,142 @@
+---
+title: Functions & Recursion
+---
+
+# Function & Recursion Examples
+
+## Simple Function
+
+```coco
+function add(int a, int b) : int {
+    return a + b;
+};
+
+main {
+    call printInt(call add(3, 4));
+    call println();
+}.
+```
+
+**Output:** `7`
+
+## Function Overloading
+
+```coco
+function j(int i) : int { return i; };
+function j(int i, int j) : int { return i + j; };
+function j(bool i) : int { return 1; };
+
+main {
+    c = call j(1);         // calls j(int)
+    call printInt(c);
+    c = call j(1, 2);      // calls j(int,int)
+    call printInt(c);
+    c = call j(true);      // calls j(bool)
+    call printInt(c);
+    call println();
+}.
+```
+
+**Output:** `1 3 1`
+
+→ [test: PA4/test008.txt](https://github.com/gigamonster256/coco-compiler/blob/main/engr-cse-compiler-design-f23/PA4/test008.txt)
+
+## Recursive Fibonacci
+
+```coco
+function fibonacci(int a) : int {
+    if (a <= 0) then return 0; fi;
+    if (a <= 2) then return 1; fi;
+    return call fibonacci(a - 1) + call fibonacci(a - 2);
+};
+
+main {
+    call printInt(call fibonacci(10));
+    call println();
+}.
+```
+
+**Output:** `55`
+
+→ [test: PA89/test222-func.txt](https://github.com/gigamonster256/coco-compiler/blob/main/engr-cse-compiler-design-f23/PA89/test222-func.txt)
+
+## Recursive Factorial
+
+```coco
+function factorial(int n) : int {
+    if (n <= 1) then return 1; fi;
+    return n * call factorial(n - 1);
+};
+
+main {
+    call printInt(call factorial(5));
+    call println();
+}.
+```
+
+**Output:** `120`
+
+## Mutual Recursion (Forward Reference)
+
+```coco
+function isEven(int n) : bool {
+    if (n == 0) then return true; fi;
+    return call isOdd(n - 1);   // isOdd declared later — OK
+};
+
+function isOdd(int n) : bool {
+    if (n == 0) then return false; fi;
+    return call isEven(n - 1);
+};
+
+main {
+    call printBool(call isEven(4));
+    call printBool(call isOdd(4));
+    call println();
+}.
+```
+
+## Array Parameter Function
+
+```coco
+function sum(int[] arr, int elems) : int {
+    int i; int total;
+    i = 0;
+    while (i < elems) do
+        total = total + arr[i];
+        i++;
+    od;
+    return total;
+};
+
+main
+int[5] values;
+{
+    values[0] = 1;
+    values[1] = 2;
+    values[2] = 3;
+    values[3] = 4;
+    values[4] = 5;
+    call printInt(call sum(values, 5));
+    call println();
+}.
+```
+
+**Output:** `15`
+
+## Void Function with Side Effects
+
+```coco
+function printTwice(int n) : void {
+    call printInt(n);
+    call printInt(n);
+    return;
+};
+
+main {
+    call printTwice(42);
+    call println();
+}.
+```
+
+**Output:** `42 42`

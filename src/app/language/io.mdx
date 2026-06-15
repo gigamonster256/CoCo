@@ -1,0 +1,116 @@
+---
+title: Built-in I/O
+---
+
+# Built-in I/O Functions
+
+CoCo provides seven built-in functions for input and output. These are
+pre-declared in the global scope and can be shadowed by user-defined
+functions.
+
+## Output Functions
+
+### `printInt(int)`
+
+Prints an integer followed by a space.
+
+```coco
+call printInt(42);          // prints: 42␣
+call printInt(x + 1);       // prints result of expression
+```
+
+### `printFloat(float)`
+
+Prints a float to 2 decimal places followed by a space.
+
+```coco
+call printFloat(3.14);      // prints: 3.14␣
+call printFloat(a / 3.0);   // prints result to 2 dp
+```
+
+### `printBool(bool)`
+
+Prints `true` or `false` followed by a space.
+
+```coco
+call printBool(true);       // prints: true␣
+call printBool(x > 0);      // prints result of comparison
+```
+
+### `println()`
+
+Prints a newline.
+
+```coco
+call println();             // prints: \n
+```
+
+## Input Functions
+
+### `readInt()`
+
+Reads an integer from stdin. Prompts `int? `.
+
+```coco
+x = call readInt();         // reads an integer into x
+```
+
+### `readFloat()`
+
+Reads a float from stdin. Prompts `float? `.
+
+```coco
+pi = call readFloat();      // reads a float into pi
+```
+
+### `readBool()`
+
+Reads a boolean from stdin. Prompts `true or false? `.
+
+```coco
+flag = call readBool();     // reads a boolean into flag
+```
+
+## Reference Table
+
+| Function | Signature | Category | Returns |
+|----------|-----------|----------|---------|
+| `printInt` | `(int) → void` | Output | — |
+| `printFloat` | `(float) → void` | Output | — |
+| `printBool` | `(bool) → void` | Output | — |
+| `println` | `() → void` | Output | — |
+| `readInt` | `() → int` | Input | `int` |
+| `readFloat` | `() → float` | Input | `float` |
+| `readBool` | `() → bool` | Input | `bool` |
+
+## Usage Rules
+
+1. **`call` is required** for all built-in function invocations
+2. **Output functions** (`printInt`, `printFloat`, `printBool`, `println`)
+   return `void` — use as statements only
+3. **Input functions** (`readInt`, `readFloat`, `readBool`) return non-void —
+   use as expressions only
+
+```coco
+call printInt(1);           // OK — void function as statement
+x = call readInt();         // OK — non-void function as expression
+
+call readInt();             // ERROR — non-void as statement
+x = call println();         // ERROR — void as expression
+```
+
+## Shadowing Built-ins
+
+User-defined functions can shadow built-in functions:
+
+```coco
+function printInt(int i) : int {
+    return i + 1;           // now printInt returns int, not void
+};
+
+main {
+    a = call printInt(2);   // calls user-defined printInt
+}.
+```
+
+After shadowing, the original built-in is no longer accessible by that name.

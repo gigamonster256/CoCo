@@ -1,0 +1,135 @@
+---
+title: Arrays
+---
+
+# Arrays
+
+## Declaration
+
+Arrays are declared with fixed sizes at compile time:
+
+```coco
+int[5] arr1;              // 1D array of 5 ints
+float[10] arr2;           // 1D array of 10 floats
+bool[3] arr3;             // 1D array of 3 bools
+
+int[2][3] matrix;         // 2D array: 2 rows, 3 columns
+int[3][1][2] cube;        // 3D array
+```
+
+## Indexing
+
+Arrays are **0-indexed**:
+
+```coco
+arr1[0] = 42;              // first element
+arr1[4] = 99;              // last element of size-5 array
+matrix[0][1] = 7;          // row 0, column 1
+cube[2][0][1] = 5;         // multi-dim indexing
+```
+
+Index expressions must be `int`:
+
+```coco
+x = arr1[i];               // variable index
+y = matrix[i][j + 1];      // computed index
+z = arr1[call readInt()];  // function result as index — OK if int
+```
+
+## Bounds Checking
+
+The type checker performs **compile-time** bounds checking for constant
+indices:
+
+```coco
+int[5] arr;
+arr[-1] = 0;    // TypeError: Array Index Out of Bounds : -1
+arr[10] = 0;    // TypeError: Array Index Out of Bounds : 10
+arr[4] = 0;     // OK
+```
+
+Negative or zero array sizes are errors:
+
+```coco
+int[-5] arr;    // TypeError: Array arr has invalid size -5
+int[0] arr;     // TypeError: Array arr has invalid size 0
+```
+
+## Array Parameters
+
+When passing arrays to functions, use empty brackets:
+
+```coco
+function sum(int[] arr) : int {
+    int total;
+    int i;
+    i = 0;
+    while (i < 5) do
+        total = total + arr[i];
+        i++;
+    od;
+    return total;
+};
+
+function copy2D(int[][] src, int[][] dst) : void {
+    dst[0][0] = src[0][0];
+};
+```
+
+Array parameters do not carry their size in the type signature.
+All array types with the same base type and dimension count are compatible
+as parameters.
+
+## Multi-Dimensional Array Examples
+
+```coco
+main
+int[2][3] x;
+int[3][2] y;
+{
+    x[0][0] = 1;
+    x[0][1] = 2;
+    x[0][2] = 3;
+    x[1][0] = 4;
+    x[1][1] = 5;
+    x[1][2] = 6;
+}.
+```
+
+Nested loops with 2D arrays:
+
+```coco
+main
+int[10][10] a;
+{
+    int i; int j;
+    i = 0;
+    while (i < 10) do
+        j = 0;
+        repeat
+            a[i][j] = i + j;
+            j++;
+        until (j >= 10);
+        i++;
+    od;
+}.
+```
+
+## Type Rules
+
+- Array types with different base types are incompatible (e.g., `int[3]` ≠ `float[3]`)
+- Array types with different dimension counts are incompatible (e.g., `int[3]` ≠ `int[3][3]`)
+- Arrays cannot be used in arithmetic, boolean, or relational expressions
+- Array assignment copies the entire array (element-wise)
+
+## Grammar for Array Types
+
+```ebnf
+(* In variable declarations *)
+typeDecl = type { "[" integerLit "]" } .
+(* e.g., int[3], float[2][2], bool[1][2][3] *)
+
+(* In parameter declarations *)
+paramType = type { "[" "]" } .
+(* e.g., int[], float[][], bool[][][] *)
+```

@@ -1,0 +1,124 @@
+---
+title: Lexical Structure
+---
+
+# Lexical Structure
+
+## Source Character Set
+
+CoCo source uses ASCII only. The language is **case-sensitive**:
+`Main`, `Else`, `iF`, and `cAll` are all identifiers, not keywords.
+
+Whitespace (spaces, tabs, newlines) separates tokens but is otherwise ignored.
+
+## Comments
+
+CoCo supports two comment styles:
+
+```coco
+// This is a line comment — extends to end of line
+
+int x; // inline comment after code
+
+/* This is a block comment.
+   It can span multiple lines. */
+
+/* Block comments do NOT nest: /* this */ is problematic */
+```
+
+Edge cases:
+- `/* unclosed block comment` reaching EOF is a scanner error
+- `main /* comment */ in` — comments between characters do not break keyword recognition
+
+## Identifiers
+
+```ebnf
+ident = letter { "_" | letter | digit } .
+letter = "a".."z" | "A".."Z" .
+digit = "0".."9" .
+```
+
+Rules:
+- Must start with a letter
+- May contain letters, digits, and underscores
+- Cannot start with underscore or digit
+- Keywords embedded in identifiers are fine: `iffy`, `whileist`, `main1` are valid
+
+## Keywords
+
+| Keyword   | Role                        |
+|-----------|-----------------------------|
+| `main`    | Program entry point         |
+| `function`| Function declaration        |
+| `if` `then` `else` `fi` | Conditional      |
+| `while` `do` `od` | While loop               |
+| `repeat` `until` | Repeat-until loop        |
+| `call`    | Function call prefix        |
+| `return`  | Return from function        |
+| `bool` `int` `float` `void` | Primitive types   |
+| `true` `false` | Boolean literals        |
+| `and` `or` `not` | Boolean operators      |
+
+## Operators
+
+| Category     | Tokens                                  |
+|-------------|------------------------------------------|
+| Arithmetic  | `+` `-` `*` `/` `%` `^`                |
+| Relational  | `==` `!=` `<` `<=` `>` `>=`            |
+| Boolean     | `and` `or` `not`                        |
+| Assignment  | `=` `+=` `-=` `*=` `/=` `%=` `^=`      |
+| Unary       | `++` `--`                               |
+
+## Delimiters
+
+| Token | Name            |
+|-------|-----------------|
+| `(`   | Open paren      |
+| `)`   | Close paren     |
+| `{`   | Open brace      |
+| `}`   | Close brace     |
+| `[`   | Open bracket    |
+| `]`   | Close bracket   |
+| `,`   | Comma           |
+| `:`   | Colon           |
+| `;`   | Semicolon       |
+| `.`   | Period (program end) |
+
+## Literals
+
+### Integer
+```ebnf
+integerLit = ["-"] digit { digit } .
+```
+Examples: `0`, `42`, `-17`
+
+### Float
+```ebnf
+floatLit = integerLit "." digit { digit } .
+```
+Examples: `3.14`, `-0.605`, `2.50`
+
+Note: Floats must have both integer and fractional parts. `-17.` is invalid.
+
+### Boolean
+```ebnf
+boolLit = "true" | "false" .
+```
+
+## Tokenization
+
+The scanner uses **maximal munch**: at each position, it consumes the longest
+valid token:
+
+- `===` → `EQUAL_TO` `EQUAL_TO` (not `ASSIGN` `EQUAL_TO`)
+- `----` → `UNI_DEC` `UNI_DEC`
+- `+=` → `ADD_ASSIGN` (not `ADD` `ASSIGN`)
+
+## Scanner Edge Cases
+
+| Input | Result |
+|-------|--------|
+| `_foo` | Error (leading underscore) |
+| `1abc` | `INT_VAL(1)` then `IDENT(abc)` |
+| `0xB33F` | `INT_VAL(0)` then `IDENT(xB33F)` — no hex support |
+| `+5` | `ADD`, `INT_VAL(5)` — `+` is not part of a positive literal |

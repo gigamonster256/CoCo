@@ -1,0 +1,31 @@
+{
+  "name": "coco",
+  "version": "0.1.0",
+  "private": true,
+  "description": "CoCo Language — compiler, specification, and documentation",
+  "homepage": "https://github.com/gigamonster256/CoCo#readme",
+  "bugs": {
+    "url": "https://github.com/gigamonster256/CoCo/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gigamonster256/CoCo.git"
+  },
+  "scripts": {
+    "dev": "next",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "next": "^16.2.9",
+    "nextra": "^4.6.1",
+    "nextra-theme-docs": "^4.6.1",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7"
+  },
+  "devDependencies": {
+    "@types/node": "25.9.3",
+    "@types/react": "^18.3.0",
+    "typescript": "^5.4.0"
+  }
+}

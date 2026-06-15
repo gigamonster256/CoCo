@@ -1,0 +1,11 @@
+{
+  "overview": "Overview",
+  "lexical": "Lexical Structure",
+  "grammar": "Formal Grammar",
+  "types": "Type System",
+  "expressions": "Expressions",
+  "statements": "Statements",
+  "functions": "Functions",
+  "arrays": "Arrays",
+  "io": "Built-in I/O"
+}

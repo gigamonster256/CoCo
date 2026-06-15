@@ -1,0 +1,7 @@
+(library
+ (name scanner_tests)
+ (modules scanner_tests parser_tests)
+ (libraries coco_lib)
+ (inline_tests)
+ (preprocess
+  (pps ppx_expect)))

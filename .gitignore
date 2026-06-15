@@ -1,0 +1,37 @@
+# Dependencies
+node_modules/
+.pnp/
+.pnp.js
+
+# Build output
+website/out/
+website/.next/
+melange/_build/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+npm-debug.log*
+
+CompilerDesign_TAMU/
+engr-cse-compiler-design-f23/
+
+.next/
+_build/
+
+# compiled js/wasm
+web/lib
