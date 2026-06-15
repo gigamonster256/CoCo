@@ -1,0 +1,31 @@
+---
+title: Compiler Pipeline
+---
+
+# Compiler Pipeline
+
+The CoCo reference compiler is a multi-pass compiler targeting the DLX virtual machine.
+
+## Pipeline Overview
+
+```
+Source (.txt)
+  -> Scanner (lexical analysis)
+  -> Parser (recursive descent, builds AST)
+  -> Symbol Table Construction
+  -> Type Checker (visitor over AST)
+  -> IR Generator (AST -> SSA Control Flow Graph)
+  -> Code Generation (TAC -> DLX instructions)
+  -> DLX Execution (emulator)
+```
+
+## Key Source Files
+
+| File | Lines | Purpose |
+|------|-------|---------|
+| `Token.java` | 177 | Token definitions, lexeme matching |
+| `Scanner.java` | 215 | Hand-written maximal-munch scanner |
+| `NonTerminal.java` | 255 | Grammar nonterminals and FIRST sets |
+| `Compiler.java` | 1391+ | Parser, code gen, optimizer |
+| `Interpreter.java` | 1081 | Tree-walk interpreter |
+| `DLX.java` | 959 | DLX processor emulator + assembler |

@@ -31,6 +31,7 @@ CompilerDesign_TAMU/
 engr-cse-compiler-design-f23/
 
 .next/
+_pagefind/
 _build/
 
 # compiled js/wasm

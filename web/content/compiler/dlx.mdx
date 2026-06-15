@@ -1,0 +1,65 @@
+---
+title: DLX Architecture
+---
+
+# DLX Virtual Machine
+
+The CoCo compiler targets the **DLX processor**, a RISC-style educational ISA with a software emulator.
+
+## Registers
+
+32 general-purpose registers (R0-R31):
+
+| Register | Purpose |
+|----------|---------|
+| R0 | Hardwired to 0 |
+| R1-R29 | General purpose |
+| R30 | Stack pointer |
+| R31 | Return address |
+
+## Memory
+
+10,000 words (40 KB), word-addressable.
+
+## Instruction Formats
+
+DLX uses a fixed 32-bit instruction word with three formats:
+
+| Format | Structure | Use |
+|--------|-----------|-----|
+| F1 | `op(6) | a(5) | b(5) | imm16` | Immediate arithmetic, branches |
+| F2 | `op(6) | a(5) | b(5) | c(5) | 5 unused` | Register operations |
+| F3 | `op(6) | addr26` | Unconditional jump |
+
+## Arithmetic (int)
+
+| Mnemonic | Format | Description |
+|----------|--------|-------------|
+| `ADD` | F2 | `R[a] = R[b] + R[c]` |
+| `ADDI` | F1 | `R[a] = R[b] + imm` |
+| `SUB` | F2 | `R[a] = R[b] - R[c]` |
+| `SUBI` | F1 | `R[a] = R[b] - imm` |
+| `MUL` | F2 | `R[a] = R[b] * R[c]` |
+| `MULI` | F1 | `R[a] = R[b] * imm` |
+| `DIV` | F2 | `R[a] = R[b] / R[c]` |
+| `DIVI` | F1 | `R[a] = R[b] / imm` |
+| `MOD` | F2 | `R[a] = R[b] % R[c]` |
+| `MODI` | F1 | `R[a] = R[b] % imm` |
+
+## Control Flow
+
+| Mnemonic | Format | Description |
+|----------|--------|-------------|
+| `BEQ` | F1 | `if R[a] == 0: PC += imm` |
+| `BNE` | F1 | `if R[a] != 0: PC += imm` |
+| `BSR` | F1 | `R[31] = PC+1; PC += imm` |
+| `JSR` | F3 | `R[31] = PC+1; PC = addr/4` |
+| `RET` | F2 | `if c==0: halt; else: PC = c/4` |
+
+## I/O
+
+| Mnemonic | Format | Description |
+|----------|--------|-------------|
+| `RDI` | F2 | `R[a] = read_int()` |
+| `WRI` | F2 | `print(R[b])` |
+| `WRL` | F1 | `println()` |

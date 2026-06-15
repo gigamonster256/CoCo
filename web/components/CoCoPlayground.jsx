@@ -1,3 +1,5 @@
+'use client'
+
 import { useState, useCallback } from 'react'
 import { run as runCoCo } from '../lib/coco/lib/coco_lib.js'
 
