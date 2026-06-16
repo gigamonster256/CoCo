@@ -1,0 +1,14 @@
+// Farabi Mahmud 327008950
+// CSCE 605 PA4
+// Testcase: redefined predefined functions
+
+main
+
+function printInt(int i) : int 
+{
+  return i+1;
+};
+
+{
+  call printInt(2);
+}.

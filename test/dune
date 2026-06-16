@@ -1,9 +1,10 @@
 (library
  (name coco_tests)
- (modules scanner_tests parser_tests)
+ (modules scanner_tests parser_tests coco_parser_tests pa4_tests)
  (libraries coco)
  (inline_tests
   (deps
-   (glob_files scanner/*.txt)))
+   (glob_files scanner/*.txt)
+   (glob_files pa4/*.txt)))
  (preprocess
   (pps ppx_expect)))

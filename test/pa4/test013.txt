@@ -1,0 +1,28 @@
+// 830006271
+// Gaultier Delbarre
+// Test Case: Return, IF/ELSE, Statements, Self-Calling function declaration
+
+main
+
+int a, b, c;
+
+function myFunc(int a, int b) : void
+{
+  if( a > b ) then
+    call myFunc(a - 1, b);
+    return;
+  else if( a < b ) then
+    call myFunc(a, b - 1);
+    return;
+  fi;
+  fi;
+
+  call println();
+};
+
+
+{
+  a = 32;
+  b = 64;
+  call myFunc( a, b );
+}.

@@ -1,0 +1,23 @@
+Computation[main:()->void]
+  DeclarationList
+    VariableDeclaration[x:int]
+    VariableDeclaration[bX:bool]
+  StatementSequence
+    Assignment
+      x:int
+      FunctionCall[readInt:()->int]
+        ArgumentList
+    FunctionCall[printInt:(int)->void]
+      ArgumentList
+        x:int
+    FunctionCall[println:()->void]
+      ArgumentList
+    Assignment
+      bX:bool
+      FunctionCall[readBool:()->bool]
+        ArgumentList
+    FunctionCall[printBool:(bool)->void]
+      ArgumentList
+        bX:bool
+    FunctionCall[println:()->void]
+      ArgumentList

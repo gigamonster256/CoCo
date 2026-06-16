@@ -1,0 +1,60 @@
+// Caleb Norton 628007801
+// CSCE 605
+
+
+main
+
+int i;
+int j;
+
+// shadowed variable in function definition (OK)
+function add(int a, int i) : int
+{
+	return a + i;
+};
+
+// shadowed variable in function body (OK)
+function sub(int a, int b) : int
+{
+	int i;
+
+	i = 5;
+	return a - b;
+};
+
+// array arguments (OK)
+function sum(int[] a) : int
+{
+	int[10] b;
+	int s;
+
+	s = 0;
+	while (s <= a[0]) do
+		s = s + a[s];
+	od;
+	return s;
+};
+
+// function calling a function (OK)
+function sum2(int[] a) : int
+{
+	return call sum(a);
+};
+
+// function calling a function not declared yet (OK)
+function sum3(int[] a) : int
+{
+	return call sum4(a);
+};
+
+// function calling a function not declared yet (OK) (see above)
+function sum4(int[] a) : int
+{
+	return call sum(a);
+};
+
+{
+
+	call println();
+
+}.

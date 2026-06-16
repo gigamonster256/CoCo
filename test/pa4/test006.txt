@@ -1,0 +1,15 @@
+// 130006243
+// Samuel Torres
+main
+int a,b,c;
+
+{
+    a = 1;
+    b = 2;
+    c = 3;
+
+    //Tests Pemdas and Outputs for Operands
+    a = 1 * (2 + 3) ^ 2;
+    b = (3 + 4 - 1) / 2;
+    b = 10 % (2 + 3);
+}.

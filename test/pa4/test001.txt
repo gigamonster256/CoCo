@@ -1,0 +1,17 @@
+// read and print vars
+main
+
+int x;
+bool bX;
+
+{
+    x = call readInt();
+
+    call printInt(x);
+    call println();
+
+    bX = call readBool();
+
+    call printBool(bX);
+    call println();
+}.

@@ -1,0 +1,29 @@
+// Caleb Norton 628007801
+// CSCE 605
+
+// test function overloading
+
+main
+
+int c;
+
+function j(int i) : int 
+{
+	return i;
+};
+
+function j(int i, int j) : int 
+{
+	return i + j;
+};
+
+function j(bool i) : int
+{
+	return 1;
+};
+
+{
+	c = call j(1);
+	c = call j(1, 2);
+	c = call j(true);
+}.

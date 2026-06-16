@@ -1,0 +1,13 @@
+main
+
+bool[2][3] b1,b2;
+
+{
+
+    b1[0][1] = false;
+    b1[0][2] = not b1[0][1];
+
+    call printBool(b1[0][1]);
+    call printBool(b1[0][2]);
+    call println();
+}.

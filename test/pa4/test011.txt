@@ -1,0 +1,26 @@
+//Himani Deshpande 730007406
+//testing ast for arithmetic operations
+main
+
+int a,b,c,x,y,z;
+
+{
+
+a = call readInt(); //4
+b = call readInt(); //3
+c = call readInt(); //2
+x = a * b; //12
+y = a / c;  //2
+z = a + b % c; //5
+
+a = x - z; //7
+
+call prinInt(a);
+call prinInt(b);
+call prinInt(c);
+call prinInt(x);
+call prinInt(y);
+call prinInt(z);
+
+return;
+}.

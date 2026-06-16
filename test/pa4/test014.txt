@@ -1,0 +1,15 @@
+// Farabi Mahmud 327008950
+// CSCE605
+// Testcase containing repeat until statement 
+
+main
+
+int a, b;
+
+{
+  b = 10;
+  repeat 
+    a++;
+  until (a > b);
+  
+}.

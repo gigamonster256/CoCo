@@ -161,7 +161,7 @@ let delimiter =
 (* token = id_or_kw | literal | operator | delimiter *)
 let token = first_of [ id_or_kw; literal; operator; delimiter ]
 
-let next_p = skip_ws *> many comment *> token
+let next_p = skip_ws *> many (comment *> skip_ws) *> token
 
 (* ===== Scanner interface ===== *)
 let next st =

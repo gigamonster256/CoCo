@@ -1,0 +1,19 @@
+// Caleb Norton 628007801
+// CSCE 605
+
+// test function redeclaration
+
+main
+function j(int i) : int 
+{
+	return i;
+};
+
+function j(int i) : float
+{
+	return i;
+};
+
+{
+	call j(1);
+}.

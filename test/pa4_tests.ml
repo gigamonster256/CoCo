@@ -1,0 +1,314 @@
+open Coco
+
+let parse_pa4 name =
+  let src = In_channel.with_open_text ("pa4/" ^ name) In_channel.input_all in
+  let tokens = Scanner.scan src in
+  let ast = Coco_parser.parse tokens in
+  Ast_pp.pp_computation ast
+;;
+
+let%expect_test "PA4 test000" =
+  print_endline (parse_pa4 "test000.txt");
+  [%expect
+    {|
+    Computation[main:()->void]
+      StatementSequence
+        FunctionCall[printInt:(int)->void]
+          ArgumentList
+            IntegerLiteral[1]
+        FunctionCall[printInt:(int)->void]
+          ArgumentList
+            IntegerLiteral[2]
+    |}]
+;;
+
+let%expect_test "PA4 test001" =
+  print_endline (parse_pa4 "test001.txt");
+  [%expect
+    {|
+    Computation[main:()->void]
+      DeclarationList
+        VariableDeclaration[x:int]
+        VariableDeclaration[bX:bool]
+      StatementSequence
+        Assignment
+          x:int
+          FunctionCall[readInt:()->int]
+            ArgumentList
+        FunctionCall[printInt:(int)->void]
+          ArgumentList
+            x:int
+        FunctionCall[println:()->void]
+          ArgumentList
+        Assignment
+          bX:bool
+          FunctionCall[readBool:()->bool]
+            ArgumentList
+        FunctionCall[printBool:(bool)->void]
+          ArgumentList
+            bX:bool
+        FunctionCall[println:()->void]
+          ArgumentList
+    |}]
+;;
+
+let%expect_test "PA4 test002" =
+  print_endline (parse_pa4 "test002.txt");
+  [%expect
+    {|
+    Computation[main:()->void]
+      DeclarationList
+        VariableDeclaration[b1:bool[2][3]]
+        VariableDeclaration[b2:bool[2][3]]
+      StatementSequence
+        Assignment
+          ArrayIndex
+            ArrayIndex
+              b1:bool[2][3]
+              IntegerLiteral[0]
+            IntegerLiteral[1]
+          BoolLiteral[false]
+        Assignment
+          ArrayIndex
+            ArrayIndex
+              b1:bool[2][3]
+              IntegerLiteral[0]
+            IntegerLiteral[2]
+          LogicalNot
+            ArrayIndex
+              ArrayIndex
+                b1:bool[2][3]
+                IntegerLiteral[0]
+              IntegerLiteral[1]
+        FunctionCall[printBool:(bool)->void]
+          ArgumentList
+            ArrayIndex
+              ArrayIndex
+                b1:bool[2][3]
+                IntegerLiteral[0]
+              IntegerLiteral[1]
+        FunctionCall[printBool:(bool)->void]
+          ArgumentList
+            ArrayIndex
+              ArrayIndex
+                b1:bool[2][3]
+                IntegerLiteral[0]
+              IntegerLiteral[2]
+        FunctionCall[println:()->void]
+          ArgumentList
+    |}]
+;;
+
+let%expect_test "PA4 test003" =
+  print_endline (parse_pa4 "test003.txt");
+  [%expect
+    {|
+Computation[main:()->void]
+  DeclarationList
+    VariableDeclaration[input:int]
+    VariableDeclaration[myvar:int]
+  DeclarationList
+    FunctionDeclaration[maxFromInput:(int)->int]
+      FunctionBody
+        DeclarationList
+          VariableDeclaration[max:int]
+          VariableDeclaration[i:int]
+          VariableDeclaration[curr:int]
+        StatementSequence
+          Assignment
+            max:int
+            IntegerLiteral[0]
+          Assignment
+            i:int
+            IntegerLiteral[0]
+          WhileStatement
+            Relation[<]
+              i:int
+              n:int
+            StatementSequence
+              Assignment
+                curr:int
+                FunctionCall[readInt:()->int]
+                  ArgumentList
+              IfStatement
+                Relation[>]
+                  curr:int
+                  max:int
+                StatementSequence
+                  Assignment
+                    max:int
+                    curr:int
+              Assignment
+                i:int
+                Addition
+                  i:int
+                  IntegerLiteral[1]
+          ReturnStatement
+            max:int
+  StatementSequence
+    Assignment
+      input:int
+      FunctionCall[readInt:()->int]
+        ArgumentList
+    Assignment
+      myvar:int
+      FunctionCall[maxFromInput:(int)->int]
+        ArgumentList
+          input:int
+    FunctionCall[printInt:(int)->void]
+      ArgumentList
+        myvar:int
+    FunctionCall[println:()->void]
+      ArgumentList
+    |}]
+;;
+
+let%expect_test "PA4 test007" =
+  print_endline (parse_pa4 "test007.txt");
+  [%expect
+    {|
+    Computation[main:()->void]
+      DeclarationList
+        VariableDeclaration[i:int]
+        VariableDeclaration[j:int]
+      DeclarationList
+        FunctionDeclaration[add:(int,int)->int]
+          FunctionBody
+            StatementSequence
+              ReturnStatement
+                Addition
+                  a:int
+                  i:int
+        FunctionDeclaration[sub:(int,int)->int]
+          FunctionBody
+            DeclarationList
+              VariableDeclaration[i:int]
+            StatementSequence
+              Assignment
+                i:int
+                IntegerLiteral[5]
+              ReturnStatement
+                Subtraction
+                  a:int
+                  b:int
+        FunctionDeclaration[sum:(int[])->int]
+          FunctionBody
+            DeclarationList
+              VariableDeclaration[b:int[10]]
+              VariableDeclaration[s:int]
+            StatementSequence
+              Assignment
+                s:int
+                IntegerLiteral[0]
+              WhileStatement
+                Relation[<=]
+                  s:int
+                  ArrayIndex
+                    a:int[]
+                    IntegerLiteral[0]
+                StatementSequence
+                  Assignment
+                    s:int
+                    Addition
+                      s:int
+                      ArrayIndex
+                        a:int[]
+                        s:int
+              ReturnStatement
+                s:int
+        FunctionDeclaration[sum2:(int[])->int]
+          FunctionBody
+            StatementSequence
+              ReturnStatement
+                FunctionCall[sum:(int[])->int]
+                  ArgumentList
+                    a:int[]
+        FunctionDeclaration[sum3:(int[])->int]
+          FunctionBody
+            StatementSequence
+              ReturnStatement
+                FunctionCall[sum4:(int[])->int]
+                  ArgumentList
+                    a:int[]
+        FunctionDeclaration[sum4:(int[])->int]
+          FunctionBody
+            StatementSequence
+              ReturnStatement
+                FunctionCall[sum:(int[])->int]
+                  ArgumentList
+                    a:int[]
+      StatementSequence
+        FunctionCall[println:()->void]
+          ArgumentList
+    |}]
+;;
+
+let%expect_test "PA4 test008" =
+  print_endline (parse_pa4 "test008.txt");
+  [%expect
+    {|
+    Computation[main:()->void]
+      DeclarationList
+        VariableDeclaration[c:int]
+      DeclarationList
+        FunctionDeclaration[j:(int)->int]
+          FunctionBody
+            StatementSequence
+              ReturnStatement
+                i:int
+        FunctionDeclaration[j:(int,int)->int]
+          FunctionBody
+            StatementSequence
+              ReturnStatement
+                Addition
+                  i:int
+                  j:int
+        FunctionDeclaration[j:(bool)->int]
+          FunctionBody
+            StatementSequence
+              ReturnStatement
+                IntegerLiteral[1]
+      StatementSequence
+        Assignment
+          c:int
+          FunctionCall[j:(int)->int]
+            ArgumentList
+              IntegerLiteral[1]
+        Assignment
+          c:int
+          FunctionCall[j:(int,int)->int]
+            ArgumentList
+              IntegerLiteral[1]
+              IntegerLiteral[2]
+        Assignment
+          c:int
+          FunctionCall[j:(bool)->int]
+            ArgumentList
+              BoolLiteral[true]
+    |}]
+;;
+
+let%expect_test "PA4 test014" =
+  print_endline (parse_pa4 "test014.txt");
+  [%expect
+    {|
+    Computation[main:()->void]
+      DeclarationList
+        VariableDeclaration[a:int]
+        VariableDeclaration[b:int]
+      StatementSequence
+        Assignment
+          b:int
+          IntegerLiteral[10]
+        RepeatStatement
+          StatementSequence
+            Assignment
+              a:int
+              Addition
+                a:int
+                IntegerLiteral[1]
+          Relation[>]
+            a:int
+            b:int
+    |}]
+;;
