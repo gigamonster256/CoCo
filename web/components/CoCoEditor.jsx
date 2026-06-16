@@ -2,47 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 
-// ── Tree-sitter highlight capture patterns ──────────────────
-
-const HIGHLIGHT_QUERY = `
-[
-  "main" "function" "if" "then" "else" "fi"
-  "while" "do" "od" "repeat" "until" "call" "return"
-] @keyword
-
-[
-  "bool" "int" "float" "void"
-] @type.builtin
-
-[
-  "and" "or" "not"
-] @keyword.operator
-
-[
-  "true" "false"
-] @boolean
-
-(integer_literal) @number
-(float_literal) @number
-(comment) @comment
-
-[
-  "(" ")" "{" "}" "[" "]" ";" "." "," ":"
-] @punctuation.delimiter
-
-[
-  "=" "+=" "-=" "*=" "/=" "%=" "^="
-  "++" "--"
-  "+" "-" "*" "/" "%" "^"
-  "==" "!=" "<" "<=" ">" ">="
-] @operator
-
-(function_declaration name: (identifier) @function)
-(function_call name: (identifier) @function.call)
-(variable_declaration name: (identifier) @variable)
-(parameter_declaration name: (identifier) @variable.parameter)
-(designator name: (identifier) @variable)
-`
+// ── Capture name → CSS class mapping ─────────────────────────
 
 const CAPTURE_CLASS = {
   'keyword': 'coco-kw',
@@ -67,20 +27,25 @@ let _querySingleton = null
 async function loadTreeSitter() {
   if (_parserSingleton) return _parserSingleton
 
-  // Fetch web-tree-sitter.js from the public directory and import
-  // via blob URL so Turbopack never sees the import.
-  const resp = await fetch('/web-tree-sitter.js')
-  const code = await resp.text()
+  // 1. Load web-tree-sitter runtime via blob URL (bypasses Turbopack)
+  const code = await fetch('/web-tree-sitter.js').then(r => r.text())
   const blob = new Blob([code], { type: 'text/javascript' })
   const url = URL.createObjectURL(blob)
-  const { default: Parser, Language } = await new Function('spec', 'return import(spec)')(url)
+  const { Parser, Language } = await new Function('spec', 'return import(spec)')(url)
   URL.revokeObjectURL(url)
 
-  await Parser.init()
+  await Parser.init({
+    locateFile: () => '/web-tree-sitter.wasm',
+  })
+
+  // 2. Load CoCo grammar WASM
   const parser = new Parser()
   const language = await Language.load('/tree-sitter-coco.wasm')
   parser.setLanguage(language)
-  _querySingleton = language.query(HIGHLIGHT_QUERY)
+
+  // 3. Load highlight query from the tree-sitter project definition
+  const queryText = await fetch('/highlights.scm').then(r => r.text())
+  _querySingleton = language.query(queryText)
   _parserSingleton = parser
   return parser
 }
@@ -131,40 +96,32 @@ function esc(s) {
 
 export default function CoCoEditor({ code, onChange }) {
   const textareaRef = useRef(null)
-  const preRef = useRef(null)
   const [html, setHtml] = useState('')
+  const [tsReady, setTsReady] = useState(false)
+  const [tsError, setTsError] = useState(null)
 
-  // Load parser once
   useEffect(() => {
-    loadTreeSitter().catch(() => {})
+    loadTreeSitter()
+      .then(() => setTsReady(true))
+      .catch((e) => { setTsReady(false); setTsError(e.message) })
   }, [])
 
-  // Highlight on code changes
   useEffect(() => {
-    if (!_parserSingleton || !_querySingleton) {
+    if (!tsReady || !_querySingleton) {
       setHtml(esc(code))
       return
     }
     let cancelled = false
-    const work = () => {
+    const id = requestAnimationFrame(() => {
       try {
         const result = buildHtml(code)
         if (!cancelled) setHtml(result)
       } catch (_) {
         if (!cancelled) setHtml(esc(code))
       }
-    }
-    // Defer to next frame for responsiveness
-    const id = requestAnimationFrame(work)
+    })
     return () => { cancelled = true; cancelAnimationFrame(id) }
-  }, [code])
-
-  const handleScroll = () => {
-    if (textareaRef.current && preRef.current) {
-      preRef.current.scrollTop = textareaRef.current.scrollTop
-      preRef.current.scrollLeft = textareaRef.current.scrollLeft
-    }
-  }
+  }, [code, tsReady])
 
   const handleKeyDown = (e) => {
     if (e.key === 'Tab') {
@@ -182,71 +139,64 @@ export default function CoCoEditor({ code, onChange }) {
   }
 
   return (
-    <div className="coco-editor">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
       <textarea
         ref={textareaRef}
         value={code}
         onChange={(e) => onChange(e.target.value)}
-        onScroll={handleScroll}
         onKeyDown={handleKeyDown}
         spellCheck={false}
         autoComplete="off"
         autoCorrect="off"
         autoCapitalize="off"
-        className="coco-editor-textarea"
+        style={{
+          width: '100%', minHeight: '180px', padding: '12px',
+          fontFamily: "'JetBrains Mono','Fira Code','Cascadia Code',monospace",
+          fontSize: '14px', lineHeight: '1.5', tabSize: 2,
+          border: 'none', outline: 'none', resize: 'vertical',
+          background: '#1e1e2e', color: '#cdd6f4',
+          boxSizing: 'border-box',
+        }}
       />
-      <pre ref={preRef} className="coco-editor-highlight" aria-hidden="true">
-        <code dangerouslySetInnerHTML={{ __html: html || esc(code) || ' ' }} />
-      </pre>
-      <style jsx>{`
-        .coco-editor {
-          position: relative;
-          min-height: 200px;
-        }
-        .coco-editor-highlight,
-        .coco-editor-textarea {
-          margin: 0;
-          padding: 12px;
-          font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
-          font-size: 14px;
-          line-height: 1.5;
-          white-space: pre;
-          overflow: auto;
-          border: none;
-          outline: none;
-          word-wrap: normal;
-        }
-        .coco-editor-highlight {
-          position: absolute;
-          inset: 0;
-          pointer-events: none;
-          background: #1e1e2e;
-          color: #cdd6f4;
-        }
-        .coco-editor-textarea {
-          position: relative;
-          width: 100%;
-          min-height: 200px;
-          resize: vertical;
-          color: transparent;
-          caret-color: #f5e0dc;
-          background: transparent;
-          z-index: 1;
-        }
-        .coco-editor-textarea::selection {
-          background: rgba(100, 140, 220, 0.35);
-        }
 
-        /* Tokens */
-        :global(.coco-kw)      { color: #cba6f7; font-weight: 600; }
-        :global(.coco-type)    { color: #89b4fa; }
-        :global(.coco-bool)    { color: #fab387; }
-        :global(.coco-num)     { color: #fab387; }
-        :global(.coco-cmt)     { color: #6c7086; font-style: italic; }
-        :global(.coco-punct)   { color: #bac2de; }
-        :global(.coco-op)      { color: #94e2d5; }
-        :global(.coco-var)     { color: #cdd6f4; }
-        :global(.coco-fn)      { color: #89b4fa; }
+      <div style={{
+        fontSize: '11px', color: '#585b70', padding: '3px 12px',
+        background: '#181825', borderTop: '1px solid #313244',
+        borderBottom: '1px solid #313244',
+        fontFamily: 'system-ui, sans-serif',
+      }}>
+        syntax-highlighted output (tree-sitter)
+      </div>
+
+      <pre style={{
+        margin: 0, padding: '12px',
+        fontFamily: "'JetBrains Mono','Fira Code','Cascadia Code',monospace",
+        fontSize: '14px', lineHeight: '1.5',
+        background: '#181825', color: '#cdd6f4',
+        overflow: 'auto', maxHeight: '260px',
+        whiteSpace: 'pre', wordWrap: 'normal',
+        tabSize: 2, MozTabSize: 2,
+        fontVariantLigatures: 'none',
+      }}>
+        <code
+          dangerouslySetInnerHTML={{ __html: html || esc(code) || ' ' }}
+          style={{
+            fontFamily: 'inherit', fontSize: 'inherit', lineHeight: 'inherit',
+            fontVariantLigatures: 'none',
+          }}
+        />
+      </pre>
+
+      <style>{`
+        .coco-kw    { color: #cba6f7; font-weight: 600; }
+        .coco-type  { color: #89b4fa; }
+        .coco-bool  { color: #fab387; }
+        .coco-num   { color: #fab387; }
+        .coco-cmt   { color: #6c7086; font-style: italic; }
+        .coco-punct { color: #bac2de; }
+        .coco-op    { color: #94e2d5; }
+        .coco-var   { color: #cdd6f4; }
+        .coco-fn    { color: #89b4fa; }
       `}</style>
     </div>
   )

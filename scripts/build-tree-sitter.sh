@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Copy tree-sitter WASM and web runtime to web/public/
+# Copy tree-sitter WASM, queries, and web runtime to web/public/
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -14,6 +14,14 @@ if [ -f "$TS_DIR/tree-sitter-CoCo.wasm" ]; then
   cp "$TS_DIR/tree-sitter-CoCo.wasm" "$PUBLIC_DIR/tree-sitter-coco.wasm"
 else
   echo "=== Skipping tree-sitter WASM (not built) ==="
+fi
+
+# Copy highlight queries
+if [ -f "$TS_DIR/queries/highlights.scm" ]; then
+  echo "=== Copying highlight queries ==="
+  cp "$TS_DIR/queries/highlights.scm" "$PUBLIC_DIR/highlights.scm"
+else
+  echo "=== Warning: highlights.scm not found ==="
 fi
 
 # Copy web-tree-sitter runtime files
