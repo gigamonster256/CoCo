@@ -58,7 +58,9 @@ type t =
   | Eof
   | Error
 
-let to_string = function
+let to_string =
+  let tsv a b = a ^ "\t" ^ b in
+  function
   | And -> "and"
   | Or -> "or"
   | Not -> "not"
@@ -112,9 +114,9 @@ let to_string = function
   | Return -> "RETURN"
   | Main -> "MAIN"
   | Func -> "FUNC"
-  | IntVal n -> "INT_VAL\t" ^ string_of_int n
-  | FloatVal f -> "FLOAT_VAL\t" ^ string_of_float f
-  | Id s -> "IDENT\t" ^ s
+  | IntVal n -> tsv "INT_VAL" @@ string_of_int n
+  | FloatVal f -> tsv "FLOAT_VAL" @@ string_of_float f
+  | Id s -> tsv "IDENT" s
   | Eof -> "EOF"
   | Error -> "ERROR"
 ;;

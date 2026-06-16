@@ -75,7 +75,7 @@ let str s =
   let len = String.length s in
   { run =
       (fun input ->
-        if String.length input.src < len
+        if input.pos + len > String.length input.src
         then input, Error ("Expected '" ^ s ^ "' but got end of input")
         else if String.sub input.src input.pos len = s
         then { input with pos = input.pos + len }, Ok s
@@ -99,13 +99,29 @@ let char c =
   }
 ;;
 
+let satisfy pred =
+  { run =
+      (fun input ->
+        if input.pos < String.length input.src
+        then (
+          let c = input.src.[input.pos] in
+          if pred c
+          then { input with pos = input.pos + 1 }, Ok c
+          else input, Error "character did not match predicate")
+        else input, Error "unexpected end of input")
+  }
+;;
+
 let digit =
   { run =
       (fun input ->
-        match String.get input.src input.pos with
-        | c when c >= '0' && c <= '9' ->
-          { input with pos = input.pos + 1 }, Ok c
-        | _ -> input, Error "Expected a digit")
+        if input.pos < String.length input.src
+        then (
+          match input.src.[input.pos] with
+          | c when c >= '0' && c <= '9' ->
+            { input with pos = input.pos + 1 }, Ok c
+          | _ -> input, Error "Expected a digit")
+        else input, Error "Expected a digit")
   }
 ;;
 
@@ -132,6 +148,37 @@ let at_least n p =
 ;;
 
 let many1 l = at_least 1 l
+
+let take_while pred =
+  { run =
+      (fun input ->
+        let start = input.pos in
+        let len = String.length input.src in
+        let rec loop pos =
+          if pos < len && pred input.src.[pos] then loop (pos + 1) else pos
+        in
+        let stop = loop input.pos in
+        ( { input with pos = stop }
+        , Ok (String.sub input.src start (stop - start)) ))
+  }
+;;
+
+let take_while1 pred =
+  { run =
+      (fun input ->
+        let start = input.pos in
+        let len = String.length input.src in
+        let rec loop pos =
+          if pos < len && pred input.src.[pos] then loop (pos + 1) else pos
+        in
+        let stop = loop input.pos in
+        if stop = start
+        then input, Error "expected at least one matching character"
+        else
+          ( { input with pos = stop }
+          , Ok (String.sub input.src start (stop - start)) ))
+  }
+;;
 
 let at_most n p =
   let rec loop acc input =
@@ -167,4 +214,24 @@ let maximal_munch prefix rest =
   let* p = prefix in
   let* r = optional rest in
   succeed (p, r)
+;;
+
+let take_until s =
+  { run =
+      (fun input ->
+        let len = String.length s in
+        let src_len = String.length input.src in
+        let rec loop pos =
+          if pos + len > src_len
+          then
+            ( { input with pos = src_len }
+            , Ok (String.sub input.src input.pos (src_len - input.pos)) )
+          else if String.sub input.src pos len = s
+          then
+            ( { input with pos }
+            , Ok (String.sub input.src input.pos (pos - input.pos)) )
+          else loop (pos + 1)
+        in
+        loop input.pos)
+  }
 ;;
