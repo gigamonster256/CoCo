@@ -1,10 +1,7 @@
-type input =
-  { src : string
-  ; pos : int
-  }
+type input = { src : string }
 type 'a t = { run : input -> input * ('a, string) result }
 
-let make src = { src; pos = 0 }
+let make src = { src }
 
 let fail msg = { run = (fun input -> input, Error msg) }
 let succeed v = { run = (fun input -> input, Ok v) }
@@ -71,64 +68,49 @@ let first_of = function
   | p :: ps -> List.fold_left ( <|> ) p ps
 ;;
 
-let str s =
-  let len = String.length s in
+let str prefix =
   { run =
       (fun input ->
-        if input.pos + len > String.length input.src
-        then input, Error ("Expected '" ^ s ^ "' but got end of input")
-        else if String.sub input.src input.pos len = s
-        then { input with pos = input.pos + len }, Ok s
-        else
-          ( input
-          , Error
-              ("Expected '"
-               ^ s
-               ^ "' but got '"
-               ^ String.sub input.src input.pos len
-               ^ "'") ))
+        if String.starts_with ~prefix input.src
+        then (
+          let len = String.length prefix in
+          ( { src = String.sub input.src len (String.length input.src - len) }
+          , Ok prefix ))
+        else input, Error ("Expected '" ^ prefix ^ "'"))
   }
 ;;
 
 let char c =
   { run =
       (fun input ->
-        if input.pos < String.length input.src && input.src.[input.pos] = c
-        then { input with pos = input.pos + 1 }, Ok c
-        else input, Error ("Expected '" ^ Char.escaped c ^ "'"))
+        try
+          if String.get input.src 0 = c
+          then
+            { src = String.sub input.src 1 (String.length input.src - 1) }, Ok c
+          else input, Error ("Expected '" ^ Char.escaped c ^ "'")
+        with
+        | Invalid_argument _ -> input, Error "unexpected end of input")
   }
 ;;
 
 let satisfy pred =
   { run =
       (fun input ->
-        if input.pos < String.length input.src
-        then (
-          let c = input.src.[input.pos] in
-          if pred c
-          then { input with pos = input.pos + 1 }, Ok c
-          else input, Error "character did not match predicate")
-        else input, Error "unexpected end of input")
-  }
-;;
-
-let digit =
-  { run =
-      (fun input ->
-        if input.pos < String.length input.src
-        then (
-          match input.src.[input.pos] with
-          | c when c >= '0' && c <= '9' ->
-            { input with pos = input.pos + 1 }, Ok c
-          | _ -> input, Error "Expected a digit")
-        else input, Error "Expected a digit")
+        try
+          if String.get input.src 0 |> pred
+          then
+            ( { src = String.sub input.src 1 (String.length input.src - 1) }
+            , Ok (String.get input.src 0) )
+          else input, Error "Unexpected character"
+        with
+        | Invalid_argument _ -> input, Error "unexpected end of input")
   }
 ;;
 
 let many p =
   let rec loop acc input =
     match p.run input with
-    | input', Ok v -> loop (v :: acc) input'
+    | input, Ok v -> loop (v :: acc) input
     | _ -> input, Ok (List.rev acc)
   in
   { run = loop [] }
@@ -152,32 +134,25 @@ let many1 l = at_least 1 l
 let take_while pred =
   { run =
       (fun input ->
-        let start = input.pos in
-        let len = String.length input.src in
-        let rec loop pos =
-          if pos < len && pred input.src.[pos] then loop (pos + 1) else pos
-        in
-        let stop = loop input.pos in
-        ( { input with pos = stop }
-        , Ok (String.sub input.src start (stop - start)) ))
+        try
+          let len = String.length input.src in
+          let rec loop pos =
+            if pos < len && pred input.src.[pos] then loop (pos + 1) else pos
+          in
+          let stop = loop 0 in
+          let consumed = stop in
+          ( { src = String.sub input.src consumed (len - consumed) }
+          , Ok (String.sub input.src 0 consumed) )
+        with
+        | Invalid_argument _ -> input, Error "unexpected end of input")
   }
 ;;
 
 let take_while1 pred =
-  { run =
-      (fun input ->
-        let start = input.pos in
-        let len = String.length input.src in
-        let rec loop pos =
-          if pos < len && pred input.src.[pos] then loop (pos + 1) else pos
-        in
-        let stop = loop input.pos in
-        if stop = start
-        then input, Error "expected at least one matching character"
-        else
-          ( { input with pos = stop }
-          , Ok (String.sub input.src start (stop - start)) ))
-  }
+  let* s = take_while pred in
+  if String.length s > 0
+  then succeed s
+  else fail "Expected at least one character satisfying the predicate"
 ;;
 
 let at_most n p =
@@ -219,19 +194,23 @@ let maximal_munch prefix rest =
 let take_until s =
   { run =
       (fun input ->
-        let len = String.length s in
-        let src_len = String.length input.src in
-        let rec loop pos =
-          if pos + len > src_len
-          then
-            ( { input with pos = src_len }
-            , Ok (String.sub input.src input.pos (src_len - input.pos)) )
-          else if String.sub input.src pos len = s
-          then
-            ( { input with pos }
-            , Ok (String.sub input.src input.pos (pos - input.pos)) )
-          else loop (pos + 1)
-        in
-        loop input.pos)
+        let src = input.src in
+        let src_len = String.length src in
+        let s_len = String.length s in
+        if s_len = 0
+        then input, Ok ""
+        else (
+          let rec find pos =
+            if pos + s_len > src_len
+            then None
+            else if String.sub src pos s_len = s
+            then Some pos
+            else find (pos + 1)
+          in
+          match find 0 with
+          | Some idx ->
+            ( { src = String.sub src idx (src_len - idx) }
+            , Ok (String.sub src 0 idx) )
+          | None -> input, Error ("Could not find '" ^ s ^ "'")))
   }
 ;;

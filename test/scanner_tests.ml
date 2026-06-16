@@ -1,9 +1,54 @@
 open Coco
 
+let show_tokens ts = List.iter (fun t -> print_endline (Token.show t)) ts
+
 let scanner_test src =
   let src = In_channel.with_open_text ("scanner/" ^ src) In_channel.input_all in
   let tokens = Scanner.scan src in
-  List.iter (fun t -> print_endline (Token.show t)) tokens
+  show_tokens tokens
+;;
+
+let%expect_test "skip whitespace" =
+  let a, r = Scanner.skip_ws.run ("     hello" |> Parser.make) in
+  match r with
+  | Ok () ->
+    print_endline a.src;
+    [%expect {| hello |}]
+  | Error e ->
+    print_endline ("Error: " ^ e);
+    [%expect.unreachable]
+;;
+let%expect_test "skip comment" =
+  let a, r =
+    Scanner.comment.run ("// this is a comment\nhello" |> Parser.make)
+  in
+  match r with
+  | Ok () ->
+    print_endline a.src;
+    [%expect {| hello |}]
+  | Error e ->
+    print_endline ("Error: " ^ e);
+    [%expect.unreachable]
+;;
+
+let%expect_test "scan empty file" =
+  "" |> Scanner.scan |> show_tokens;
+  [%expect {| EOF |}]
+;;
+
+let%expect_test "scan whitespace only" =
+  " \t\n\r" |> Scanner.scan |> show_tokens;
+  [%expect {| EOF |}]
+;;
+
+let%expect_test "scan comment only" =
+  "// this is a comment" |> Scanner.scan |> show_tokens;
+  [%expect {| EOF |}]
+;;
+
+let%expect_test "block comment only" =
+  "/* this is a block comment */" |> Scanner.scan |> show_tokens;
+  [%expect {| EOF |}]
 ;;
 
 let%expect_test "scan test000.txt" =

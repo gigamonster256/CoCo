@@ -23,33 +23,7 @@ let%expect_test "error missing word" =
     [%expect.unreachable]
   | _, Error e ->
     print_endline ("Error: " ^ e);
-    [%expect {| Error: Expected 'hello' but got 'goodb' |}]
-;;
-
-let%expect_test "parse number" =
-  let input = "5 is a number" |> Parser.make in
-  let number = Parser.digit |> Parser.map Char.Ascii.digit_to_int in
-  let result = number.run input in
-  match result with
-  | _, Ok v ->
-    print_endline ("Parsed: " ^ string_of_int v);
-    [%expect {| Parsed: 5 |}]
-  | _, Error e ->
-    print_endline ("Error: " ^ e);
-    [%expect.unreachable]
-;;
-
-let%expect_test "error not a number" =
-  let input = "not a number" |> Parser.make in
-  let number = Parser.digit |> Parser.map Char.Ascii.digit_to_int in
-  let result = number.run input in
-  match result with
-  | _, Ok v ->
-    print_endline ("Parsed: " ^ string_of_int v);
-    [%expect.unreachable]
-  | _, Error e ->
-    print_endline ("Error: " ^ e);
-    [%expect {| Error: Expected a digit |}]
+    [%expect {| Error: Expected 'hello' |}]
 ;;
 
 let%expect_test "succeed" =
@@ -120,8 +94,7 @@ let%expect_test "<|> both fail" =
     [%expect.unreachable]
   | _, Error e ->
     print_endline ("Error: " ^ e);
-    [%expect
-      {| Error: Expected 'hello' but got 'goodb' or Expected 'world' but got 'goodb' |}]
+    [%expect {| Error: Expected 'hello' or Expected 'world' |}]
 ;;
 
 let%expect_test "first_of first" =
@@ -185,8 +158,7 @@ let%expect_test "first_of all fail" =
     [%expect.unreachable]
   | _, Error e ->
     print_endline ("Error: " ^ e);
-    [%expect
-      {| Error: Expected 'hello' but got 'goodb' or Expected 'world' but got 'goodb' or Expected '!' but got 'g' |}]
+    [%expect {| Error: Expected 'hello' or Expected 'world' or Expected '!' |}]
 ;;
 
 let%expect_test "optional missing" =
