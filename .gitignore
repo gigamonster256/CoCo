@@ -36,3 +36,5 @@ _build/
 
 # compiled js/wasm
 web/lib
+web/public/*.wasm
+web/public/*.js

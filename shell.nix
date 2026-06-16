@@ -6,7 +6,8 @@ let
 in
 pkgs.mkShell {
   nativeBuildInputs = [
-    pkgs.nodejs
+    pkgs.nodejs # nextjs app and tree-sitter
+    pkgs.tree-sitter
   ];
   buildInputs = [
     opkgs.dune_3
