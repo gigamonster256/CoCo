@@ -15,7 +15,8 @@
     "dev": "next --turbopack",
     "build": "next build",
     "build:melange": "../scripts/build-melange.sh",
-    "prebuild": "npm run build:melange",
+    "build:tree-sitter": "../scripts/build-tree-sitter.sh",
+    "prebuild": "npm run build:melange && npm run build:tree-sitter",
     "postbuild": "pagefind --site .next/server/app --output-path public/_pagefind",
     "start": "next start"
   },
@@ -24,7 +25,8 @@
     "nextra": "^5.0.0-alpha.24",
     "nextra-theme-docs": "^5.0.0-alpha.24",
     "react": "^19.2.7",
-    "react-dom": "^19.2.7"
+    "react-dom": "^19.2.7",
+    "web-tree-sitter": "^0.26.9"
   },
   "devDependencies": {
     "@types/node": "25.9.3",

@@ -1,7 +1,10 @@
 'use client'
 
 import { useState, useCallback } from 'react'
+import dynamic from 'next/dynamic'
 import { run as runCoCo } from '../lib/coco/lib/coco_lib.js'
+
+const CoCoEditor = dynamic(() => import('./CoCoEditor'), { ssr: false })
 
 const DEFAULT_CODE = `main {
     call printInt(1 + 2 * 3 ^ 4);
@@ -60,17 +63,7 @@ export default function CoCoPlayground() {
           </button>
         </div>
 
-        <textarea
-          value={code}
-          onChange={e => setCode(e.target.value)}
-          spellCheck={false}
-          style={{
-            width: '100%', minHeight: '200px', padding: '12px',
-            fontFamily: 'monospace', fontSize: '14px', lineHeight: '1.5',
-            border: 'none', outline: 'none', resize: 'vertical',
-            background: '#1e1e2e', color: '#cdd6f4'
-          }}
-        />
+        <CoCoEditor code={code} onChange={setCode} />
 
         {(output || error) && (
           <div style={{

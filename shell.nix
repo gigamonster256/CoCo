@@ -8,6 +8,7 @@ pkgs.mkShell {
   nativeBuildInputs = [
     pkgs.nodejs # nextjs app and tree-sitter
     pkgs.tree-sitter
+    pkgs.emscripten # tree-sitter wasm build
   ];
   buildInputs = [
     opkgs.dune_3
