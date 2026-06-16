@@ -1,0 +1,19 @@
+{
+  "$schema": "https://tree-sitter.github.io/tree-sitter/assets/schemas/config.schema.json",
+  "grammars": [
+    {
+      "name": "CoCo",
+      "camelcase": "CoCo",
+      "scope": "source.coco",
+      "file-types": ["coco"],
+      "highlights": "queries/highlights.scm",
+      "injection-regex": "^coco$"
+    }
+  ],
+  "metadata": {
+    "version": "1.0.0",
+    "license": "ISC",
+    "description": "Tree-sitter grammar for the CoCo language",
+    "authors": []
+  }
+}
