@@ -118,7 +118,7 @@ let string_of_base_type = function
   | Float -> "float"
 ;;
 
-let build (cvars, cfuncs, _cstmts) =
+let build ((cvars, cfuncs, _cstmts) : Ast.computation) =
   let env = empty () in
   push_scope env;
   List.iter
