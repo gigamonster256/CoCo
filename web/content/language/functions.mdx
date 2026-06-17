@@ -48,12 +48,12 @@ call printInt(x);                // as statement
 
 ### Call Rules
 
-| Call Context | Return Type | Valid? |
-|-------------|-------------|--------|
-| `x = call f()` (expression) | Non-void | Yes |
-| `x = call f()` (expression) | `void` | **Type error** |
-| `call f();` (statement) | `void` | Yes |
-| `call f();` (statement) | Non-void | **Type error** |
+| Call Context                | Return Type | Valid?         |
+| --------------------------- | ----------- | -------------- |
+| `x = call f()` (expression) | Non-void    | Yes            |
+| `x = call f()` (expression) | `void`      | **Type error** |
+| `call f();` (statement)     | `void`      | Yes            |
+| `call f();` (statement)     | Non-void    | **Type error** |
 
 ### Arguments in Calls
 
@@ -67,7 +67,7 @@ call myFunc(arr[0], matrix[1][2]); // array element as arg
 
 ## Function Overloading
 
-Functions are identified by **name + parameter types** (the *signature*).
+Functions are identified by **name + parameter types** (the _signature_).
 Return type does not distinguish overloads.
 
 ```coco

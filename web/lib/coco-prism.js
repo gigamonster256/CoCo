@@ -3,7 +3,7 @@
 
 (function (Prism) {
   Prism.languages.coco = {
-    'comment': [
+    comment: [
       {
         pattern: /\/\*[\s\S]*?\*\//,
         greedy: true,
@@ -13,31 +13,30 @@
         greedy: true,
       },
     ],
-    'string': {
+    string: {
       pattern: /"[^"]*"/,
       greedy: true,
     },
-    'keyword': {
+    keyword: {
       pattern: /\b(?:main|function|call|return|if|then|else|fi|while|do|od|repeat|until)\b/,
     },
-    'type': {
+    type: {
       pattern: /\b(?:int|float|bool|void)\b/,
     },
-    'boolean': {
+    boolean: {
       pattern: /\b(?:true|false)\b/,
     },
-    'operator': {
-      pattern:
-        /(==|!=|<=|>=|<|>|\+=|-=|\*=|\/=|%=|\^=|&&|\|\||\+\+|--|\+|-|\*|\/|%|\^|=)/,
+    operator: {
+      pattern: /(==|!=|<=|>=|<|>|\+=|-=|\*=|\/=|%=|\^=|&&|\|\||\+\+|--|\+|-|\*|\/|%|\^|=)/,
     },
-    'punctuation': /[{}[\](),.:;]/,
-    'number': {
+    punctuation: /[{}[\](),.:;]/,
+    number: {
       pattern: /-?\d+(?:\.\d+)?/,
     },
-    'function': {
+    function: {
       pattern: /\b[a-zA-Z][a-zA-Z\d_]*\s*(?=\()/,
     },
-    'variable': {
+    variable: {
       pattern: /\b[a-zA-Z][a-zA-Z\d_]*\b/,
     },
   };

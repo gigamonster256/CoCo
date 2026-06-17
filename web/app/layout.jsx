@@ -1,18 +1,18 @@
-import { Footer, Layout, Navbar } from 'nextra-theme-docs'
-import { Head } from 'nextra/components'
-import { getPageMap } from 'nextra/page-map'
-import 'nextra-theme-docs/style.css'
+import { Footer, Layout, Navbar } from "nextra-theme-docs";
+import { Head } from "nextra/components";
+import { getPageMap } from "nextra/page-map";
+import "nextra-theme-docs/style.css";
 
 export const metadata = {
   title: {
-    template: '%s – CoCo',
-    default: 'CoCo Language',
+    template: "%s – CoCo",
+    default: "CoCo Language",
   },
-  description: 'CoCo Language Reference',
-}
+  description: "CoCo Language Reference",
+};
 
-const navbar = <Navbar logo={<b>CoCo</b>} />
-const footer = <Footer>CoCo Language Reference</Footer>
+const navbar = <Navbar logo={<b>CoCo</b>} />;
+const footer = <Footer>CoCo Language Reference</Footer>;
 
 export default async function RootLayout({ children }) {
   return (
@@ -29,5 +29,5 @@ export default async function RootLayout({ children }) {
         </Layout>
       </body>
     </html>
-  )
+  );
 }

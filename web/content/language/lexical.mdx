@@ -27,6 +27,7 @@ int x; // inline comment after code
 ```
 
 Edge cases:
+
 - `/* unclosed block comment` reaching EOF is a scanner error
 - `main /* comment */ in` — comments between characters do not break keyword recognition
 
@@ -39,6 +40,7 @@ digit = "0".."9" .
 ```
 
 Rules:
+
 - Must start with a letter
 - May contain letters, digits, and underscores
 - Cannot start with underscore or digit
@@ -46,61 +48,66 @@ Rules:
 
 ## Keywords
 
-| Keyword   | Role                        |
-|-----------|-----------------------------|
-| `main`    | Program entry point         |
-| `function`| Function declaration        |
-| `if` `then` `else` `fi` | Conditional      |
-| `while` `do` `od` | While loop               |
-| `repeat` `until` | Repeat-until loop        |
-| `call`    | Function call prefix        |
-| `return`  | Return from function        |
-| `bool` `int` `float` `void` | Primitive types   |
-| `true` `false` | Boolean literals        |
-| `and` `or` `not` | Boolean operators      |
+| Keyword                     | Role                 |
+| --------------------------- | -------------------- |
+| `main`                      | Program entry point  |
+| `function`                  | Function declaration |
+| `if` `then` `else` `fi`     | Conditional          |
+| `while` `do` `od`           | While loop           |
+| `repeat` `until`            | Repeat-until loop    |
+| `call`                      | Function call prefix |
+| `return`                    | Return from function |
+| `bool` `int` `float` `void` | Primitive types      |
+| `true` `false`              | Boolean literals     |
+| `and` `or` `not`            | Boolean operators    |
 
 ## Operators
 
-| Category     | Tokens                                  |
-|-------------|------------------------------------------|
-| Arithmetic  | `+` `-` `*` `/` `%` `^`                |
-| Relational  | `==` `!=` `<` `<=` `>` `>=`            |
-| Boolean     | `and` `or` `not`                        |
-| Assignment  | `=` `+=` `-=` `*=` `/=` `%=` `^=`      |
-| Unary       | `++` `--`                               |
+| Category   | Tokens                            |
+| ---------- | --------------------------------- |
+| Arithmetic | `+` `-` `*` `/` `%` `^`           |
+| Relational | `==` `!=` `<` `<=` `>` `>=`       |
+| Boolean    | `and` `or` `not`                  |
+| Assignment | `=` `+=` `-=` `*=` `/=` `%=` `^=` |
+| Unary      | `++` `--`                         |
 
 ## Delimiters
 
-| Token | Name            |
-|-------|-----------------|
-| `(`   | Open paren      |
-| `)`   | Close paren     |
-| `{`   | Open brace      |
-| `}`   | Close brace     |
-| `[`   | Open bracket    |
-| `]`   | Close bracket   |
-| `,`   | Comma           |
-| `:`   | Colon           |
-| `;`   | Semicolon       |
+| Token | Name                 |
+| ----- | -------------------- |
+| `(`   | Open paren           |
+| `)`   | Close paren          |
+| `{`   | Open brace           |
+| `}`   | Close brace          |
+| `[`   | Open bracket         |
+| `]`   | Close bracket        |
+| `,`   | Comma                |
+| `:`   | Colon                |
+| `;`   | Semicolon            |
 | `.`   | Period (program end) |
 
 ## Literals
 
 ### Integer
+
 ```ebnf
 integerLit = ["-"] digit { digit } .
 ```
+
 Examples: `0`, `42`, `-17`
 
 ### Float
+
 ```ebnf
 floatLit = integerLit "." digit { digit } .
 ```
+
 Examples: `3.14`, `-0.605`, `2.50`
 
 Note: Floats must have both integer and fractional parts. `-17.` is invalid.
 
 ### Boolean
+
 ```ebnf
 boolLit = "true" | "false" .
 ```
@@ -116,9 +123,9 @@ valid token:
 
 ## Scanner Edge Cases
 
-| Input | Result |
-|-------|--------|
-| `_foo` | Error (leading underscore) |
-| `1abc` | `INT_VAL(1)` then `IDENT(abc)` |
-| `0xB33F` | `INT_VAL(0)` then `IDENT(xB33F)` — no hex support |
-| `+5` | `ADD`, `INT_VAL(5)` — `+` is not part of a positive literal |
+| Input    | Result                                                      |
+| -------- | ----------------------------------------------------------- |
+| `_foo`   | Error (leading underscore)                                  |
+| `1abc`   | `INT_VAL(1)` then `IDENT(abc)`                              |
+| `0xB33F` | `INT_VAL(0)` then `IDENT(xB33F)` — no hex support           |
+| `+5`     | `ADD`, `INT_VAL(5)` — `+` is not part of a positive literal |

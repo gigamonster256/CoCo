@@ -10,30 +10,30 @@ compile time.
 
 ## Primitive Types
 
-| Type   | Domain                               | Notes                    |
-|--------|--------------------------------------|--------------------------|
-| `int`  | 32-bit signed integer                | All arithmetic supported |
-| `float`| 32-bit IEEE 754 single precision     | All arithmetic supported |
-| `bool` | `true` or `false`                    | Boolean logic only       |
-| `void` | No value                             | Function return type only |
+| Type    | Domain                           | Notes                     |
+| ------- | -------------------------------- | ------------------------- |
+| `int`   | 32-bit signed integer            | All arithmetic supported  |
+| `float` | 32-bit IEEE 754 single precision | All arithmetic supported  |
+| `bool`  | `true` or `false`                | Boolean logic only        |
+| `void`  | No value                         | Function return type only |
 
 ## Operator Type Signatures
 
 ### Arithmetic
 
-| Op | Operand Types | Result |
-|----|--------------|--------|
-| `+` | `int × int` | `int` |
+| Op  | Operand Types   | Result  |
+| --- | --------------- | ------- |
+| `+` | `int × int`     | `int`   |
 | `+` | `float × float` | `float` |
-| `-` | `int × int` | `int` |
+| `-` | `int × int`     | `int`   |
 | `-` | `float × float` | `float` |
-| `*` | `int × int` | `int` |
+| `*` | `int × int`     | `int`   |
 | `*` | `float × float` | `float` |
-| `/` | `int × int` | `int` |
+| `/` | `int × int`     | `int`   |
 | `/` | `float × float` | `float` |
-| `%` | `int × int` | `int` |
+| `%` | `int × int`     | `int`   |
 | `%` | `float × float` | `float` |
-| `^` | `int × int` | `int` |
+| `^` | `int × int`     | `int`   |
 | `^` | `float × float` | `float` |
 
 **Cross-type operations are errors:** `int + float`, `float * int`, etc.
@@ -41,39 +41,39 @@ produce a compile-time `TypeError`.
 
 ### Boolean
 
-| Op | Operand Types | Result |
-|----|--------------|--------|
-| `and` | `bool × bool` | `bool` |
-| `or` | `bool × bool` | `bool` |
-| `not` | `bool` | `bool` |
-| `^` | `bool × bool` | `bool` (xor) |
+| Op    | Operand Types | Result       |
+| ----- | ------------- | ------------ |
+| `and` | `bool × bool` | `bool`       |
+| `or`  | `bool × bool` | `bool`       |
+| `not` | `bool`        | `bool`       |
+| `^`   | `bool × bool` | `bool` (xor) |
 
 ### Relational
 
-| Input Types | Valid Operators | Result |
-|-------------|-----------------|--------|
-| `int × int` | `==` `!=` `<` `<=` `>` `>=` | `bool` |
+| Input Types     | Valid Operators             | Result |
+| --------------- | --------------------------- | ------ |
+| `int × int`     | `==` `!=` `<` `<=` `>` `>=` | `bool` |
 | `float × float` | `==` `!=` `<` `<=` `>` `>=` | `bool` |
-| `bool × bool` | `==` `!=` | `bool` |
+| `bool × bool`   | `==` `!=`                   | `bool` |
 
 Mixing types in comparisons (e.g., `bool == int`) is a type error.
 
 ### Assignment
 
-| LHS | Valid RHS |
-|-----|-----------|
-| `int` | `int` |
-| `float` | `float` |
-| `bool` | `bool` |
-| `T[N]` | `T[N]` (same base type and dimension) |
+| LHS     | Valid RHS                             |
+| ------- | ------------------------------------- |
+| `int`   | `int`                                 |
+| `float` | `float`                               |
+| `bool`  | `bool`                                |
+| `T[N]`  | `T[N]` (same base type and dimension) |
 
 Compound assignment operators (`+=`, `-=`, `*=`, etc.) follow the corresponding
 binary operator type rules.
 
 ### Unary
 
-| Op | Valid Operands | Result |
-|----|---------------|--------|
+| Op   | Valid Operands | Result          |
+| ---- | -------------- | --------------- |
 | `++` | `int`, `float` | Same as operand |
 | `--` | `int`, `float` | Same as operand |
 
@@ -105,15 +105,15 @@ function f(int x) : float { ... };    // ERROR — same signature as first
 
 ## Common Type Errors
 
-| Error | Example |
-|-------|---------|
-| `int + bool` | `call printInt(1 + false);` |
-| `bool` condition required | `while (42) do ... od;` |
-| `bool` used in arithmetic | `call printInt(3 - true);` |
-| Assigning wrong type | `int x; x = 3.14;` |
-| `void` in expression | `a = call println();` |
-| Non-`void` as statement | `call readInt();` |
-| Increment `bool` | `b++; // where b is bool` |
+| Error                     | Example                     |
+| ------------------------- | --------------------------- |
+| `int + bool`              | `call printInt(1 + false);` |
+| `bool` condition required | `while (42) do ... od;`     |
+| `bool` used in arithmetic | `call printInt(3 - true);`  |
+| Assigning wrong type      | `int x; x = 3.14;`          |
+| `void` in expression      | `a = call println();`       |
+| Non-`void` as statement   | `call readInt();`           |
+| Increment `bool`          | `b++; // where b is bool`   |
 
 ## Type Checking Rules (Formal)
 

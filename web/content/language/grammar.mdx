@@ -76,36 +76,36 @@ literal      = boolLit | integerLit | floatLit .
 
 ## Operator Precedence Table
 
-| Precedence | Level              | Operators                    | Assoc  |
-|-----------|--------------------|------------------------------|--------|
-| 1 (highest) | Primary         | literals, designators, `call`, `( )` | —    |
-| 2         | Unary              | `not` (prefix)               | —      |
-| 3         | Power              | `^`                          | Right  |
-| 4         | Multiplicative     | `*` `/` `%` `and`            | Left   |
-| 5         | Additive           | `+` `-` `or`                 | Left   |
-| 6 (lowest)| Relational         | `==` `!=` `<` `<=` `>` `>=` | Left   |
+| Precedence  | Level          | Operators                            | Assoc |
+| ----------- | -------------- | ------------------------------------ | ----- |
+| 1 (highest) | Primary        | literals, designators, `call`, `( )` | —     |
+| 2           | Unary          | `not` (prefix)                       | —     |
+| 3           | Power          | `^`                                  | Right |
+| 4           | Multiplicative | `*` `/` `%` `and`                    | Left  |
+| 5           | Additive       | `+` `-` `or`                         | Left  |
+| 6 (lowest)  | Relational     | `==` `!=` `<` `<=` `>` `>=`          | Left  |
 
 **Note:** `and` binds tighter than `or`, matching standard boolean algebra
 conventions.
 
 ## FIRST Sets
 
-| Nonterminal | FIRST Tokens |
-|-------------|-------------|
-| `COMPUTATION` | `main` |
-| `VAR_DECL` | `int`, `float`, `bool` |
-| `FUNC_DECL` | `function` |
-| `FUNC_BODY` | `{` |
-| `FORMAL_PARAM` | `(` |
-| `STATEMENT` | `IDENT`, `call`, `if`, `while`, `repeat`, `return` |
-| `IF_STAT` | `if` |
-| `WHILE_STAT` | `while` |
-| `REPEAT_STAT` | `repeat` |
-| `RETURN_STAT` | `return` |
-| `ASSIGN` | `IDENT` |
-| `FUNC_CALL` | `call` |
-| `REL_EXPR` | `INT_VAL`, `FLOAT_VAL`, `TRUE`, `FALSE`, `IDENT`, `not`, `(`, `call` |
-| `LITERAL` | `INT_VAL`, `FLOAT_VAL`, `TRUE`, `FALSE` |
-| `DESIGNATOR` | `IDENT` |
-| `TYPE` | `int`, `float`, `bool` |
-| `RELATION` | `(` |
+| Nonterminal    | FIRST Tokens                                                         |
+| -------------- | -------------------------------------------------------------------- |
+| `COMPUTATION`  | `main`                                                               |
+| `VAR_DECL`     | `int`, `float`, `bool`                                               |
+| `FUNC_DECL`    | `function`                                                           |
+| `FUNC_BODY`    | `{`                                                                  |
+| `FORMAL_PARAM` | `(`                                                                  |
+| `STATEMENT`    | `IDENT`, `call`, `if`, `while`, `repeat`, `return`                   |
+| `IF_STAT`      | `if`                                                                 |
+| `WHILE_STAT`   | `while`                                                              |
+| `REPEAT_STAT`  | `repeat`                                                             |
+| `RETURN_STAT`  | `return`                                                             |
+| `ASSIGN`       | `IDENT`                                                              |
+| `FUNC_CALL`    | `call`                                                               |
+| `REL_EXPR`     | `INT_VAL`, `FLOAT_VAL`, `TRUE`, `FALSE`, `IDENT`, `not`, `(`, `call` |
+| `LITERAL`      | `INT_VAL`, `FLOAT_VAL`, `TRUE`, `FALSE`                              |
+| `DESIGNATOR`   | `IDENT`                                                              |
+| `TYPE`         | `int`, `float`, `bool`                                               |
+| `RELATION`     | `(`                                                                  |
