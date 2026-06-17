@@ -7,6 +7,9 @@ in
 pkgs.mkShell {
   nativeBuildInputs = [
     pkgs.nodejs
+    pkgs.treefmt
+    pkgs.nixfmt
+    pkgs.oxfmt
   ];
   buildInputs = [
     opkgs.dune_3
