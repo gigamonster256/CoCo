@@ -18,7 +18,8 @@ pkgs.mkShell {
     opkgs.ocamlformat
     opkgs.utop
     opkgs.ocaml-lsp
-    opkgs.melange
+    opkgs.js_of_ocaml
+    opkgs.js_of_ocaml-ppx
     opkgs.ppxlib
     opkgs.ppx_expect
     opkgs.ppx_deriving

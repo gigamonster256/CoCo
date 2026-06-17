@@ -1,0 +1,4 @@
+(executable
+ (name coco_js)
+ (modes js)
+ (libraries coco js_of_ocaml))

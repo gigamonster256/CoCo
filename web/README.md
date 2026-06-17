@@ -57,11 +57,13 @@ CoCo code blocks use ` ```coco ` fences. The highlighting is provided by a
 custom Prism grammar in `lib/coco-prism.js`. A TextMate grammar is also
 available in `lib/coco.tmLanguage.json` for VS Code / Shiki integration.
 
-## Interactive Playground (Future)
+## Interactive Playground
 
-The interactive playground will use the Melange-compiled OCaml interpreter
-(see `../melange/`). To set up:
+The interactive playground uses the js_of_ocaml-compiled OCaml parser
+(see `../jsoo/`). The build pipeline is:
 
-1. Build the Melange project: `cd ../melange && dune build @mel`
-2. Copy the output to `website/lib/coco/`
-3. Import in React components via ES6 modules
+1. `dune build ./jsoo/coco_js.bc.js` — compiles OCaml to JS
+2. Copy output to `web/public/lib/coco/` — the playground loads it at runtime
+3. The playground calls `cocoRun()` (parse + AST dump) or `cocoTokenize()` (lexer)
+
+Run the full pipeline with `npm run build` (the `prebuild` script handles OCaml compilation).

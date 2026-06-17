@@ -37,4 +37,4 @@ next-env.d.ts
 public/_pagefind/
 
 # compiled wasm/ocaml
-lib/coco/
+public/lib

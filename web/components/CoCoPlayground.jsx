@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { run as runCoCo } from "../lib/coco/lib/coco_lib.js";
 
 const DEFAULT_CODE = `main {
     call printInt(1 + 2 * 3 ^ 4);
@@ -24,21 +23,43 @@ const DEFAULT_CODE = `main {
     call println();
 }.`;
 
+const isBrowser = typeof window !== "undefined";
+
+const cocoRun = (code) => {
+  if (!isBrowser || !globalThis.cocoRun) {
+    return "CoCo runtime not loaded yet.";
+  }
+  return globalThis.cocoRun(code);
+};
+
+const cocoTokenize = (code) => {
+  if (!isBrowser || !globalThis.cocoTokenize) {
+    return "CoCo runtime not loaded yet.";
+  }
+  return globalThis.cocoTokenize(code);
+};
+
 export default function CoCoPlayground() {
   const [code, setCode] = useState(DEFAULT_CODE);
   const [output, setOutput] = useState("");
   const [error, setError] = useState("");
+  const [mode, setMode] = useState("parse");
 
   const run = useCallback(() => {
     setError("");
-    const result = runCoCo(code);
-    if (result.startsWith("Error:")) {
+    const fn = mode === "parse" ? cocoRun : cocoTokenize;
+    const result = fn(code);
+    if (
+      result.startsWith("Error:") ||
+      result.startsWith("Parse error:") ||
+      result.startsWith("Lex error:")
+    ) {
       setError(result);
       setOutput("");
     } else {
       setOutput(result);
     }
-  }, [code]);
+  }, [code, mode]);
 
   return (
     <div
@@ -63,21 +84,42 @@ export default function CoCoPlayground() {
           <span style={{ fontSize: "14px", fontWeight: 600, color: "#374151" }}>
             CoCo Playground
           </span>
-          <button
-            onClick={run}
-            style={{
-              padding: "4px 16px",
-              fontSize: "13px",
-              fontWeight: 500,
-              background: "#3b82f6",
-              color: "white",
-              border: "none",
-              borderRadius: "4px",
-              cursor: "pointer",
-            }}
-          >
-            Run
-          </button>
+          <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+            <select
+              value={mode}
+              onChange={(e) => {
+                setMode(e.target.value);
+                setOutput("");
+                setError("");
+              }}
+              style={{
+                padding: "4px 8px",
+                fontSize: "13px",
+                border: "1px solid #d1d5db",
+                borderRadius: "4px",
+                background: "white",
+                cursor: "pointer",
+              }}
+            >
+              <option value="parse">Parse (AST)</option>
+              <option value="tokenize">Tokenize</option>
+            </select>
+            <button
+              onClick={run}
+              style={{
+                padding: "4px 16px",
+                fontSize: "13px",
+                fontWeight: 500,
+                background: "#3b82f6",
+                color: "white",
+                border: "none",
+                borderRadius: "4px",
+                cursor: "pointer",
+              }}
+            >
+              Run
+            </button>
+          </div>
         </div>
 
         <textarea

@@ -1,5 +1,0 @@
-(melange.emit
- (target output)
- (alias mel)
- (libraries coco)
- (module_systems esm))

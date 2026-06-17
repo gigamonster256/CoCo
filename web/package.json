@@ -14,8 +14,8 @@
   "scripts": {
     "dev": "next --turbopack",
     "build": "next build",
-    "build:melange": "../scripts/build-melange.sh",
-    "prebuild": "npm run build:melange",
+    "build:jsoo": "../scripts/build-jsoo.sh",
+    "prebuild": "npm run build:jsoo",
     "postbuild": "pagefind --site .next/server/app --output-path public/_pagefind",
     "start": "next start"
   },

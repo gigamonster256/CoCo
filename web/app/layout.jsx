@@ -19,6 +19,7 @@ export default async function RootLayout({ children }) {
     <html lang="en" dir="ltr" suppressHydrationWarning>
       <Head />
       <body>
+        <script src="/lib/coco/coco_js.js" defer />
         <Layout
           navbar={navbar}
           pageMap={await getPageMap()}

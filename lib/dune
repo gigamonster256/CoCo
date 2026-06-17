@@ -1,6 +1,4 @@
 (library
  (name coco)
- (modes native melange)
- (modules token scanner parser ast ast_pp symbol_table coco_parser)
- ; (private_modules parser)
- (libraries melange))
+ (modes native byte)
+ (modules token scanner parser ast ast_pp symbol_table coco_parser))
